@@ -310,12 +310,13 @@ body.mobile-app-body {
 }
 
 /* Insignia circular de la cabecera que enfoca el ícono del logo sin estirarlo */
+/* Insignia de la cabecera y menú (Cuadrado con bordes redondeados) */
 .logo-circle-badge {
     width: 44px;
     height: 44px;
     min-width: 44px;
     aspect-ratio: 1 / 1;
-    border-radius: 50%;
+    border-radius: 12px; /* <-- Cambiado de 50% a 12px para que no sea un círculo */
     background: #FFFFFF;
     border: 1px solid #EAEAEA;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
@@ -323,14 +324,15 @@ body.mobile-app-body {
     align-items: center;
     justify-content: center;
     overflow: hidden;
+    padding: 3px; /* Espacio en blanco alrededor del logo */
 }
 
+/* Ajuste de la imagen sin distorsión ni zoom */
 .brand-logo-icon-crop {
     width: 100%;
     height: 100%;
     object-fit: contain;
-    /* Enfoca el símbolo superior de la imagen original sin deformar su proporción */
-    transform: scale(1.32) translateY(8%);
+    transform: none; /* <-- Quitamos el zoom que cortaba el logo */
     display: block;
 }
 
