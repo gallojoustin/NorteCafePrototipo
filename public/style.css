@@ -1,0 +1,1473 @@
+/* ==========================================================================
+   NORTECAFÉ PRO - SISTEMA DE INFORMACIÓN AGTECH
+   Hoja de Estilos Móvil Adaptada a los Bocetos Oficiales
+   ========================================================================== */
+
+:root {
+    /* Paleta Oficial NorteCafé AgTech & Bocetos */
+    --coffee-dark: #23120B;       /* Café expreso muy profundo para títulos */
+    --coffee-primary: #3E2723;    /* Café corporativo */
+    --coffee-medium: #8B5A2B;     /* Café tostado medio */
+    --coffee-light: #E6E1DA;      /* Borde suave crema/gris */
+    --gold-accent: #F0A52B;       /* Dorado mostaza botón Calcular cosecha */
+    --gold-dark: #D99026;         /* Dorado flecha del logo */
+    --gold-light: #FDF3DF;        /* Fondo amarillo suave de alerta offline */
+    --green-agtech: #1E6B43;      /* Verde oscuro elegante del boceto */
+    --green-pill-bg: #EBF5EE;     /* Fondo verde suave para iconos y píldoras */
+    
+    /* Colores de Interfaz */
+    --bg-main: #FAFAFA;           /* Fondo principal limpio estilo boceto */
+    --bg-card: #FFFFFF;           /* Blanco puro para tarjetas */
+    --bg-soft-card: #F5F6F5;      /* Gris verdoso muy tenue para tarjetas de mercado */
+    --text-dark: #1E140F;         /* Texto principal */
+    --text-muted: #717572;        /* Texto secundario */
+    --danger: #C62828;
+    --danger-bg: #FFEBEE;
+    --warning: #D9822B;
+    --warning-bg: #FFF4DC;
+    --institutional: #1565C0;
+    --institutional-bg: #E3F2FD;
+
+    /* Dimensiones y Sombras */
+    --bottomnav-height: 74px;
+    --radius-xl: 20px;
+    --radius-lg: 16px;
+    --radius-md: 12px;
+    --radius-sm: 8px;
+    --shadow-soft: 0 2px 10px rgba(30, 20, 15, 0.05);
+    --shadow-elevated: 0 10px 28px rgba(30, 20, 15, 0.14);
+    --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ==========================================
+   1. RESET Y CONTENEDOR PRINCIPAL MÓVIL
+   ========================================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+    background-color: #18120E;
+    color: var(--text-dark);
+    height: 100%;
+    overflow-x: hidden;
+}
+
+body.mobile-app-body {
+    max-width: 480px;
+    margin: 0 auto;
+    min-height: 100vh;
+    background-color: var(--bg-main);
+    position: relative;
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.45);
+    overflow-x: hidden;
+}
+
+.view {
+    display: none;
+    min-height: 100vh;
+    width: 100%;
+}
+
+.view.active {
+    display: block;
+}
+
+.fade-in {
+    animation: fadeIn 0.3s ease-out forwards;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.mt-3 { margin-top: 16px !important; }
+.text-center { text-align: center !important; }
+.text-muted { color: var(--text-muted) !important; font-size: 0.84rem; text-decoration: none; }
+.text-danger { color: var(--danger) !important; font-weight: 700; }
+.text-success { color: var(--green-agtech) !important; font-weight: 700; }
+.highlight { color: var(--green-agtech); font-weight: 800; }
+
+/* ==========================================
+   2. PANTALLA DE CARGA ANIMADA (COFFEE LOADER)
+   ========================================== */
+.loading-overlay {
+    position: fixed;
+    inset: 0;
+    max-width: 480px;
+    margin: 0 auto;
+    background: radial-gradient(circle at center, #2E1C14 0%, #160D09 100%);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.35s ease;
+}
+
+.loading-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.loader-content {
+    text-align: center;
+    padding: 28px;
+    width: 85%;
+}
+
+.coffee-loader-wrapper {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.spinner-gold-ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 3px solid rgba(240, 165, 43, 0.15);
+    border-top-color: var(--gold-accent);
+    border-right-color: #2E7D32;
+    animation: spinRing 1.15s linear infinite;
+}
+
+@keyframes spinRing {
+    to { transform: rotate(360deg); }
+}
+
+.coffee-cup-anim {
+    position: relative;
+    width: 54px;
+    height: 44px;
+    margin-top: 10px;
+}
+
+.cup-body {
+    width: 46px;
+    height: 38px;
+    background: #FFFFFF;
+    border-radius: 4px 4px 20px 20px;
+    position: relative;
+    overflow: hidden;
+    border: 3px solid #FFFFFF;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.coffee-liquid {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 75%;
+    background: linear-gradient(180deg, #8B5A2B 0%, #3E2723 100%);
+    animation: fillCoffee 1.8s ease-in-out infinite alternate;
+}
+
+@keyframes fillCoffee {
+    0% { height: 25%; }
+    100% { height: 85%; }
+}
+
+.cup-handle {
+    position: absolute;
+    right: -4px;
+    top: 6px;
+    width: 14px;
+    height: 20px;
+    border: 3px solid #FFFFFF;
+    border-left: none;
+    border-radius: 0 10px 10px 0;
+}
+
+.steam-container {
+    position: absolute;
+    top: -18px;
+    left: 8px;
+    width: 30px;
+    display: flex;
+    justify-content: space-around;
+}
+
+.steam {
+    width: 4px;
+    height: 14px;
+    background: rgba(255, 255, 255, 0.65);
+    border-radius: 10px;
+    animation: riseSteam 1.2s ease-in-out infinite;
+}
+
+.steam.s2 { animation-delay: 0.3s; height: 18px; }
+.steam.s3 { animation-delay: 0.6s; }
+
+@keyframes riseSteam {
+    0% { transform: translateY(4px) scaleY(0.8); opacity: 0; }
+    50% { opacity: 0.85; }
+    100% { transform: translateY(-10px) scaleY(1.2); opacity: 0; }
+}
+
+.loader-title {
+    color: #FFFFFF;
+    font-size: 1.4rem;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+}
+
+.loader-status {
+    color: #D7CCC8;
+    font-size: 0.85rem;
+    margin-bottom: 18px;
+    min-height: 20px;
+}
+
+.loader-progress-bar {
+    width: 100%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.loader-progress-fill {
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(90deg, #2E7D32, var(--gold-accent));
+    border-radius: 10px;
+    transition: width 0.3s ease;
+}
+
+/* ==========================================
+   3. LOGO SIN DISTORSIÓN Y MÓDULO DE LOGIN
+   ========================================== */
+#login-view.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 16px;
+    background: linear-gradient(160deg, var(--coffee-dark) 0%, var(--coffee-primary) 60%, #5D3A24 100%);
+}
+
+.login-card {
+    background: var(--bg-card);
+    width: 100%;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: var(--shadow-elevated);
+    padding-bottom: 28px;
+}
+
+.login-banner-wrapper {
+    position: relative;
+    height: 150px;
+    width: 100%;
+    margin-bottom: 64px;
+}
+
+.login-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(0.75);
+}
+
+/* Contenedor cuadrado perfecto que evita cualquier deformación del logo */
+.login-logo-container {
+    position: absolute;
+    bottom: -54px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 112px;
+    height: 112px;
+    aspect-ratio: 1 / 1;
+    background: #FFFFFF;
+    border-radius: 26px;
+    padding: 8px;
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.22);
+    border: 2.5px solid rgba(217, 144, 38, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.brand-logo-img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center;
+    display: block;
+}
+
+/* Insignia circular de la cabecera que enfoca el ícono del logo sin estirarlo */
+.logo-circle-badge {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    aspect-ratio: 1 / 1;
+    border-radius: 50%;
+    background: #FFFFFF;
+    border: 1px solid #EAEAEA;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.brand-logo-icon-crop {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    /* Enfoca el símbolo superior de la imagen original sin deformar su proporción */
+    transform: scale(1.32) translateY(8%);
+    display: block;
+}
+
+.login-header {
+    text-align: center;
+    padding: 0 20px 16px;
+}
+
+.login-header h2 {
+    color: var(--coffee-dark);
+    font-size: 1.65rem;
+    font-weight: 900;
+    letter-spacing: -0.3px;
+}
+
+.agtech-subtitle {
+    display: block;
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 1.4px;
+    color: var(--coffee-primary);
+    margin-top: 2px;
+}
+
+.login-header p {
+    color: var(--text-muted);
+    font-size: 0.82rem;
+    margin-top: 4px;
+}
+
+#login-form {
+    padding: 0 22px;
+}
+
+.input-group {
+    position: relative;
+    margin-bottom: 14px;
+    display: flex;
+    flex-direction: column;
+}
+
+.input-group label {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--coffee-primary);
+    margin-bottom: 6px;
+}
+
+#login-form .input-group {
+    flex-direction: row;
+    align-items: center;
+}
+
+#login-form .input-group i {
+    position: absolute;
+    left: 14px;
+    color: var(--coffee-medium);
+    font-size: 1rem;
+}
+
+#login-form .input-group input {
+    padding-left: 42px;
+}
+
+.input-group input,
+.input-group select {
+    width: 100%;
+    padding: 13px 14px;
+    border: 1.5px solid var(--coffee-light);
+    border-radius: var(--radius-md);
+    font-size: 0.95rem;
+    color: var(--text-dark);
+    background-color: #FFFFFF;
+    transition: var(--transition);
+    outline: none;
+}
+
+.input-group input:focus,
+.input-group select:focus {
+    border-color: var(--green-agtech);
+    box-shadow: 0 0 0 3px rgba(30, 107, 67, 0.12);
+}
+
+.input-group input[readonly],
+.input-group input:disabled {
+    background-color: #F0EFEA;
+    color: var(--text-muted);
+}
+
+.login-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.82rem;
+    margin: 10px 0 20px;
+}
+
+.login-options label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+}
+
+/* ==========================================
+   4. CABECERA SUPERIOR LIMPIA (ESTILO BOCETO)
+   ========================================== */
+.topbar {
+    position: sticky;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #FFFFFF;
+    border-bottom: 1px solid #EDEDED;
+    z-index: 1000;
+}
+
+.topbar-mobile-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 14px;
+    min-height: 68px;
+}
+
+.topbar-left-group,
+.topbar-right-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-menu-mobile,
+.btn-icon {
+    background: #F5F6F5;
+    border: 1px solid #E8EAE8;
+    color: var(--coffee-dark);
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    font-size: 1.05rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: relative;
+}
+
+.mobile-brand-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.brand-text-block {
+    display: flex;
+    flex-direction: column;
+}
+
+.mobile-brand-title {
+    font-size: 1.15rem;
+    font-weight: 900;
+    color: var(--coffee-dark);
+    line-height: 1.1;
+}
+
+.mobile-brand-sub {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+/* Píldora En línea / Sin conexión del boceto */
+.status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.76rem;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.status-pill.online {
+    background-color: var(--green-pill-bg);
+    color: var(--green-agtech);
+}
+
+.status-pill.offline {
+    background-color: var(--warning-bg);
+    color: #9A5B13;
+}
+
+.status-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background-color: var(--green-agtech);
+    box-shadow: 0 0 0 2px rgba(30, 107, 67, 0.25);
+}
+
+.status-pill.offline .status-dot {
+    background-color: var(--warning);
+    box-shadow: 0 0 0 2px rgba(217, 130, 43, 0.25);
+}
+
+.btn-icon .badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    background-color: var(--danger);
+    color: #FFFFFF;
+    font-size: 0.65rem;
+    font-weight: 800;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.offline-banner {
+    background-color: #FFF3CD;
+    color: #7A4F01;
+    padding: 8px 14px;
+    font-size: 0.76rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border-bottom: 1px solid #FFE69C;
+}
+
+/* ==========================================
+   5. PANTALLA DE INICIO (TARJETAS GRANDES TRM Y NY)
+   ========================================== */
+.content-wrapper {
+    padding: 18px 16px calc(var(--bottomnav-height) + 24px);
+}
+
+.content-section {
+    display: none;
+}
+
+.content-section.active {
+    display: block;
+}
+
+.home-greeting-header {
+    margin-bottom: 18px;
+}
+
+.greeting-top-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+}
+
+.section-eyebrow {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.8px;
+    color: var(--green-agtech);
+    text-transform: uppercase;
+    border-top: 2px solid var(--green-agtech);
+    padding-top: 4px;
+}
+
+.date-pill {
+    background-color: #F3F4F3;
+    color: var(--coffee-dark);
+    font-size: 0.74rem;
+    font-weight: 700;
+    padding: 5px 10px;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.greeting-title {
+    font-size: 1.65rem;
+    font-weight: 900;
+    color: var(--coffee-dark);
+    line-height: 1.15;
+    margin: 4px 0 6px;
+}
+
+.greeting-subtitle {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+}
+
+/* Grilla de 2 Columnas para TRM y Contrato C de NY (del boceto) */
+.market-hero-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.market-hero-card {
+    background-color: var(--bg-soft-card);
+    border: 1px solid #E7EAE7;
+    border-radius: var(--radius-xl);
+    padding: 14px 13px;
+    display: flex;
+    flex-direction: column;
+}
+
+.mh-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.mh-icon-box {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background-color: #E3F1E8;
+    color: var(--green-agtech);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.05rem;
+}
+
+.mh-trend-badge {
+    font-size: 0.72rem;
+    font-weight: 800;
+    padding: 3px 7px;
+    border-radius: 8px;
+}
+
+.mh-trend-badge.up {
+    background-color: #E3F1E8;
+    color: var(--green-agtech);
+}
+
+.mh-trend-badge.down {
+    background-color: var(--danger-bg);
+    color: var(--danger);
+}
+
+.mh-label {
+    font-size: 0.78rem;
+    color: #5C615E;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+/* Valores numéricos grandes y destacados */
+.mh-big-value {
+    font-size: 1.52rem;
+    font-weight: 900;
+    color: var(--coffee-dark);
+    letter-spacing: -0.5px;
+    line-height: 1.1;
+}
+
+.mh-unit {
+    font-size: 0.74rem;
+    color: var(--text-muted);
+    margin-top: 3px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #E2E5E2;
+}
+
+.mh-sync {
+    display: flex;
+    align-items: flex-start;
+    gap: 5px;
+    margin-top: 8px;
+    font-size: 0.68rem;
+    color: var(--text-muted);
+    line-height: 1.25;
+}
+
+.mh-sync i {
+    margin-top: 2px;
+    font-size: 0.7rem;
+}
+
+/* Botón Dorado Grande "Calcular nueva cosecha" */
+.cta-harvest-card {
+    width: 100%;
+    background-color: var(--gold-accent);
+    border: none;
+    border-radius: var(--radius-xl);
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    cursor: pointer;
+    box-shadow: 0 6px 18px rgba(240, 165, 43, 0.28);
+    margin-bottom: 22px;
+    text-align: left;
+    transition: var(--transition);
+}
+
+.cta-harvest-card:active {
+    transform: scale(0.98);
+}
+
+.cta-icon-box {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    background-color: rgba(255, 255, 255, 0.35);
+    color: var(--coffee-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.35rem;
+    flex-shrink: 0;
+}
+
+.cta-text-box {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.cta-eyebrow {
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.6px;
+    color: #4A2C0A;
+}
+
+.cta-main-text {
+    font-size: 1.12rem;
+    font-weight: 900;
+    color: var(--coffee-dark);
+}
+
+.cta-arrow {
+    font-size: 1.2rem;
+    color: var(--coffee-dark);
+}
+
+/* Bloque Lotes Recientes del boceto */
+.recent-lots-block {
+    margin-bottom: 18px;
+}
+
+.recent-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 12px;
+}
+
+.recent-title {
+    font-size: 1.25rem;
+    font-weight: 900;
+    color: var(--coffee-dark);
+    margin-top: 2px;
+}
+
+.link-view-all {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--green-agtech);
+    text-decoration: none;
+}
+
+.recent-lots-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.recent-lot-item {
+    background-color: #FFFFFF;
+    border: 1px solid #EAEAEA;
+    border-radius: var(--radius-lg);
+    padding: 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    box-shadow: var(--shadow-soft);
+}
+
+.rl-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    background-color: var(--green-pill-bg);
+    color: var(--green-agtech);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.05rem;
+    flex-shrink: 0;
+}
+
+.rl-info {
+    flex: 1;
+}
+
+.rl-info h4 {
+    font-size: 0.92rem;
+    font-weight: 800;
+    color: var(--coffee-dark);
+}
+
+.rl-info p {
+    font-size: 0.76rem;
+    color: var(--text-muted);
+    margin-top: 2px;
+}
+
+.rl-price {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.88rem;
+    color: var(--green-agtech);
+}
+
+.rl-price i {
+    color: #9E9E9E;
+    font-size: 0.8rem;
+}
+
+/* ==========================================
+   6. SECCIÓN CONEXIÓN Y DATOS (BOCETO 1)
+   ========================================== */
+.breadcrumb-nav {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    margin-bottom: 18px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #EFEFEF;
+}
+
+.breadcrumb-nav a {
+    color: var(--text-muted);
+    text-decoration: none;
+}
+
+.breadcrumb-nav .active-crumb {
+    color: var(--green-agtech);
+    font-weight: 700;
+}
+
+.settings-big-title {
+    font-size: 1.65rem;
+    font-weight: 900;
+    color: var(--coffee-dark);
+    margin: 4px 0 6px;
+}
+
+.settings-subtitle {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+}
+
+.connection-toggle-card {
+    background-color: var(--bg-soft-card);
+    border: 1px solid #E5E8E5;
+    border-radius: var(--radius-xl);
+    padding: 18px 16px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 14px;
+}
+
+.conn-icon-box {
+    width: 46px;
+    height: 46px;
+    border-radius: 12px;
+    background-color: #E3F1E8;
+    color: var(--green-agtech);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.15rem;
+    flex-shrink: 0;
+}
+
+.conn-icon-box.offline-mode {
+    background-color: var(--warning-bg);
+    color: var(--warning);
+}
+
+.conn-text-box {
+    flex: 1;
+}
+
+.conn-text-box h4 {
+    font-size: 0.96rem;
+    font-weight: 800;
+    color: var(--coffee-dark);
+}
+
+.conn-text-box p {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin-top: 2px;
+}
+
+/* Interruptor estilo iOS verde del boceto */
+.ios-switch {
+    position: relative;
+    display: inline-block;
+    width: 54px;
+    height: 30px;
+    flex-shrink: 0;
+}
+
+.ios-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.ios-slider {
+    position: absolute;
+    cursor: pointer;
+    inset: 0;
+    background-color: #CBD0CD;
+    transition: 0.3s;
+    border-radius: 30px;
+}
+
+.ios-slider:before {
+    position: absolute;
+    content: "";
+    height: 22px;
+    width: 22px;
+    left: 4px;
+    bottom: 4px;
+    background-color: #FFFFFF;
+    transition: 0.3s;
+    border-radius: 50%;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.ios-switch input:checked + .ios-slider {
+    background-color: var(--green-agtech);
+}
+
+.ios-switch input:checked + .ios-slider:before {
+    transform: translateX(24px);
+}
+
+/* Tarjeta crema "Siempre puede seguir trabajando" */
+.offline-guarantee-card {
+    background-color: var(--gold-light);
+    border-radius: var(--radius-xl);
+    padding: 16px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.offline-guarantee-card i {
+    color: #C27D1A;
+    font-size: 1.05rem;
+    margin-top: 3px;
+}
+
+.offline-guarantee-card h4 {
+    font-size: 0.9rem;
+    font-weight: 800;
+    color: var(--coffee-dark);
+}
+
+.offline-guarantee-card p {
+    font-size: 0.78rem;
+    color: #6E6254;
+    margin-top: 2px;
+}
+
+.settings-quick-links {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.settings-link-btn {
+    width: 100%;
+    background: #F8F8F7;
+    border: 1px solid #EAEAEA;
+    border-radius: var(--radius-md);
+    padding: 13px 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--coffee-dark);
+    font-size: 0.86rem;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+    text-align: left;
+}
+
+.settings-link-btn i:first-child {
+    color: var(--green-agtech);
+    width: 20px;
+    text-align: center;
+    font-size: 1rem;
+}
+
+.settings-link-btn span {
+    flex: 1;
+}
+
+.marketplace-link-btn {
+    background: var(--green-pill-bg);
+    border-color: #C8E6C9;
+}
+
+/* ==========================================
+   7. BOTONES Y SIDEBAR DESPLEGABLE
+   ========================================== */
+.btn-primary,
+.btn-secondary {
+    width: 100%;
+    min-height: 48px;
+    border: none;
+    border-radius: var(--radius-md);
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 18px;
+    transition: var(--transition);
+}
+
+.btn-primary {
+    background: var(--green-agtech);
+    color: #FFFFFF;
+}
+
+.btn-secondary {
+    background: var(--coffee-primary);
+    color: #FFFFFF;
+}
+
+.btn-sm {
+    padding: 8px 12px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--coffee-light);
+    background-color: var(--gold-light);
+    color: var(--coffee-primary);
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-edit {
+    background-color: var(--institutional-bg);
+    color: var(--institutional);
+}
+
+.sidebar-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(20, 12, 8, 0.6);
+    backdrop-filter: blur(2px);
+    z-index: 1900;
+    opacity: 0;
+    pointer-events: none;
+    transition: var(--transition);
+}
+
+.sidebar-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 285px;
+    height: 100vh;
+    background: linear-gradient(180deg, var(--coffee-dark) 0%, var(--coffee-primary) 100%);
+    color: #FFFFFF;
+    z-index: 2000;
+    transform: translateX(-105%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+.sidebar.open {
+    transform: translateX(0);
+}
+
+.sidebar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.sidebar-header h3 {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: #FFFFFF;
+}
+
+.sidebar-subtitle {
+    font-size: 0.7rem;
+    color: var(--gold-accent);
+}
+
+.btn-close-sidebar {
+    background: rgba(255, 255, 255, 0.12);
+    border: none;
+    color: #FFFFFF;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px;
+    background-color: rgba(0, 0, 0, 0.25);
+    margin: 12px;
+    border-radius: var(--radius-md);
+    border-left: 3px solid var(--gold-accent);
+}
+
+.user-info img {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+}
+
+.user-info .name { font-weight: 700; font-size: 0.92rem; }
+.user-info .role { font-size: 0.76rem; color: #D7CCC8; }
+
+.nav-links {
+    list-style: none;
+    padding: 6px 12px 24px;
+    flex: 1;
+}
+
+.nav-links li { margin-bottom: 4px; }
+.nav-links li.divider {
+    height: 1px;
+    background-color: rgba(255, 255, 255, 0.12);
+    margin: 10px 4px;
+}
+
+.nav-links a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 14px;
+    color: #E0D6D0;
+    text-decoration: none;
+    font-size: 0.88rem;
+    font-weight: 600;
+    border-radius: var(--radius-md);
+}
+
+.nav-links a i {
+    width: 20px;
+    text-align: center;
+    color: var(--gold-accent);
+}
+
+.nav-links a.active,
+.nav-links a:hover {
+    background-color: var(--gold-accent);
+    color: var(--coffee-dark);
+    font-weight: 700;
+}
+
+.nav-links a.active i,
+.nav-links a:hover i {
+    color: var(--coffee-dark);
+}
+
+.badge-nav {
+    margin-left: auto;
+    background-color: var(--danger);
+    color: #FFFFFF;
+    font-size: 0.7rem;
+    padding: 2px 7px;
+    border-radius: 12px;
+}
+
+/* ==========================================
+   8. RESTO DE MÓDULOS (TARJETAS, GRÁFICA, TABLAS)
+   ========================================== */
+.header-section { margin-bottom: 16px; }
+.header-section h2 { font-size: 1.35rem; font-weight: 900; color: var(--coffee-dark); margin-bottom: 4px; }
+.header-section p { font-size: 0.84rem; color: var(--text-muted); line-height: 1.35; }
+
+.cards-grid,
+.calc-container,
+.logistics-container,
+.traceability-grid,
+.profile-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.info-card {
+    background-color: var(--bg-card);
+    border-radius: var(--radius-lg);
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    box-shadow: var(--shadow-soft);
+    border: 1px solid #EAEAEA;
+}
+
+.card-icon {
+    width: 46px;
+    height: 46px;
+    border-radius: 12px;
+    background-color: var(--green-pill-bg);
+    color: var(--green-agtech);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    flex-shrink: 0;
+}
+
+.card-icon.warning { background-color: var(--warning-bg); color: var(--warning); }
+.card-icon.success { background-color: var(--green-pill-bg); color: var(--green-agtech); }
+
+.info-card h4 { font-size: 0.78rem; color: var(--text-muted); font-weight: 600; }
+.info-card h3 { font-size: 1.12rem; font-weight: 800; color: var(--coffee-dark); }
+
+.chart-container {
+    background-color: var(--bg-card);
+    border-radius: var(--radius-lg);
+    padding: 16px;
+    margin-top: 16px;
+    box-shadow: var(--shadow-soft);
+    border: 1px solid #EAEAEA;
+}
+
+.chart-container h3 {
+    font-size: 0.95rem;
+    color: var(--coffee-dark);
+    margin-bottom: 12px;
+    font-weight: 800;
+}
+
+.chart-canvas-wrapper {
+    position: relative;
+    width: 100%;
+    height: 210px;
+}
+
+.form-panel,
+.result-panel,
+.qr-card,
+.details-card {
+    background-color: var(--bg-card);
+    border-radius: var(--radius-lg);
+    padding: 18px 16px;
+    box-shadow: var(--shadow-soft);
+    border: 1px solid #EAEAEA;
+}
+
+.form-panel h4,
+.result-panel h4 {
+    font-size: 1rem;
+    color: var(--coffee-dark);
+    margin-bottom: 14px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #F0F0F0;
+    font-weight: 800;
+}
+
+.input-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.result-box {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 14px;
+    background-color: #F7F8F7;
+    border-radius: var(--radius-md);
+    margin-bottom: 10px;
+    font-size: 0.88rem;
+    font-weight: 600;
+}
+
+.result-box.alert { background-color: var(--danger-bg); }
+.result-box.total { background-color: var(--green-pill-bg); border: 1px solid #B7DFC5; }
+.result-box .value { font-size: 1.05rem; font-weight: 800; }
+
+.route-map {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin: 18px 0;
+    color: var(--coffee-medium);
+}
+
+.qr-card { text-align: center; }
+.qr-card img { width: 175px; height: 175px; border-radius: var(--radius-md); border: 2px solid #EAEAEA; padding: 6px; }
+.trace-list { list-style: none; }
+.trace-list li { padding: 8px 0; border-bottom: 1px dashed #E0E0E0; font-size: 0.86rem; display: flex; justify-content: space-between; }
+
+.alert-box {
+    padding: 12px 14px;
+    border-radius: var(--radius-md);
+    font-size: 0.84rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.alert-box.success { background-color: var(--green-pill-bg); color: var(--green-agtech); }
+.alert-box.warning { background-color: var(--warning-bg); color: #8D5412; }
+
+.table-responsive { width: 100%; overflow-x: auto; }
+.data-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+.data-table th { background-color: var(--coffee-dark); color: #FFFFFF; text-align: left; padding: 10px 8px; }
+.data-table td { padding: 10px 8px; border-bottom: 1px solid #EFEFEF; }
+
+.profile-header-edit { display: flex; align-items: center; gap: 14px; margin-bottom: 14px; }
+.profile-header-edit img { width: 58px; height: 58px; border-radius: 50%; }
+hr.divider { border: none; height: 1px; background-color: #EAEAEA; margin: 18px 0; }
+
+.notifications-container { display: flex; flex-direction: column; gap: 12px; }
+.notification-card {
+    background-color: var(--bg-card);
+    border-radius: var(--radius-lg);
+    padding: 14px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    box-shadow: var(--shadow-soft);
+    border-left: 4px solid #E0E0E0;
+}
+.notification-card.unread { border-left-color: var(--gold-accent); }
+.notif-icon {
+    width: 40px; height: 40px; border-radius: 10px;
+    background-color: var(--green-pill-bg); color: var(--green-agtech);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.notif-icon.institutional { background-color: var(--institutional-bg); color: var(--institutional); }
+.notif-icon.danger { background-color: var(--danger-bg); color: var(--danger); }
+.notif-content { flex: 1; }
+.notif-content h4 { font-size: 0.9rem; margin-bottom: 3px; }
+.notif-content p { font-size: 0.8rem; color: var(--text-muted); line-height: 1.35; }
+.notif-time { display: block; font-size: 0.72rem; color: var(--green-agtech); font-weight: 600; margin-top: 5px; }
+.btn-mark-read {
+    background-color: var(--green-pill-bg); color: var(--green-agtech);
+    border: none; width: 32px; height: 32px; border-radius: 50%; cursor: pointer;
+}
+
+/* ==========================================
+   9. BARRA INFERIOR ESTILO BOCETO (PILL ACTIVA)
+   ========================================== */
+.mobile-bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 480px;
+    height: var(--bottomnav-height);
+    background-color: #FFFFFF;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 6px 10px;
+    border-top: 1px solid #EAEAEA;
+    z-index: 1500;
+}
+
+.bottom-nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: var(--text-muted);
+    font-size: 0.72rem;
+    font-weight: 600;
+    flex: 1;
+    height: 58px;
+    border-radius: 16px;
+    gap: 4px;
+    transition: var(--transition);
+}
+
+.bottom-nav-item i {
+    font-size: 1.15rem;
+}
+
+/* Fondo verde suave redondeado en la pestaña activa igual al boceto */
+.bottom-nav-item.active {
+    background-color: var(--green-pill-bg);
+    color: var(--green-agtech);
+    font-weight: 800;
+}

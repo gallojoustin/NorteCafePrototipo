@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#FFFFFF">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>NorteCafé Pro - Finanzas para su cosecha</title>
+    
+    <!-- Enlace al archivo CSS principal -->
+    <link rel="stylesheet" href="style.css">
+    <!-- Librerías Externas: Iconos (FontAwesome) y Gráficos (Chart.js) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="mobile-app-body">
+
+    <!-- ==========================================
+         PANTALLA DE CARGA ANIMADA (COFFEE LOADER)
+         ========================================== -->
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="loader-content">
+            <div class="coffee-loader-wrapper">
+                <div class="spinner-gold-ring"></div>
+                <div class="coffee-cup-anim">
+                    <div class="steam-container">
+                        <span class="steam s1"></span>
+                        <span class="steam s2"></span>
+                        <span class="steam s3"></span>
+                    </div>
+                    <div class="cup-body">
+                        <div class="coffee-liquid"></div>
+                    </div>
+                    <div class="cup-handle"></div>
+                </div>
+            </div>
+            <h3 class="loader-title">NorteCafé</h3>
+            <p class="loader-status" id="loader-status-text">Preparando tu entorno agrícola...</p>
+            <div class="loader-progress-bar">
+                <div class="loader-progress-fill" id="loader-progress-fill"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         MÓDULO 1: AUTENTICACIÓN / INICIO DE SESIÓN
+         ========================================== -->
+    <div id="login-view" class="view active">
+        <div class="login-card fade-in">
+            <div class="login-banner-wrapper">
+                <img src="https://images.unsplash.com/photo-1559525839-b184a4d698c7?auto=format&fit=crop&w=600&q=80" alt="Granos de café" class="login-img">
+                <!-- Contenedor del Logo sin distorsión -->
+                <div class="login-logo-container">
+                    <img src="Gemini_Generated_Image_4fgpvv4fgpvv4fgp.jpg" 
+                         alt="Logo NorteCafé" 
+                         class="brand-logo-img"
+                         onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 240 240%22><rect width=%22240%22 height=%22240%22 rx=%2240%22 fill=%22%23ffffff%22/><path d=%22M116 175 C55 175 25 118 38 50 C88 58 116 100 116 175 Z%22 fill=%22%232E7D32%22/><path d=%22M38 50 L116 175 M65 92 L95 78 M52 118 L92 112 M78 145 L110 135%22 stroke=%22%23A5D6A7%22 stroke-width=%224.5%22 stroke-linecap=%22round%22/><rect x=%22124%22 y=%22100%22 width=%2214%22 height=%2270%22 rx=%222%22 fill=%22%233E2723%22/><rect x=%22144%22 y=%2276%22 width=%2214%22 height=%2294%22 rx=%222%22 fill=%22%233E2723%22/><rect x=%22164%22 y=%2252%22 width=%2214%22 height=%22118%22 rx=%222%22 fill=%22%233E2723%22/><rect x=%22184%22 y=%2228%22 width=%2214%22 height=%22130%22 rx=%222%22 fill=%22%233E2723%22/><path d=%22M120 152 Q160 105 202 36%22 fill=%22none%22 stroke=%22%23D99026%22 stroke-width=%2213%22 stroke-linecap=%22round%22/><polygon points=%22186,32 216,20 212,52%22 fill=%22%23D99026%22/><ellipse cx=%22120%22 cy=%22195%22 rx=%2212%22 ry=%2216%22 fill=%22%233E2723%22/><path d=%22M120 180 Q116 195 120 210%22 fill=%22none%22 stroke=%22%23ffffff%22 stroke-width=%222.5%22/></svg>';">
+                </div>
+            </div>
+
+            <div class="login-header">
+                <h2>NorteCafé</h2>
+                <span class="agtech-subtitle">SISTEMA DE INFORMACIÓN AGTECH</span>
+                <p>Finanzas para su cosecha · Norte de Santander</p>
+            </div>
+            
+            <form id="login-form">
+                <div class="input-group">
+                    <i class="fa-solid fa-id-card"></i>
+                    <input type="text" id="username" inputmode="numeric" placeholder="Cédula del Caficultor" required>
+                </div>
+                <div class="input-group">
+                    <i class="fa-solid fa-lock"></i>
+                    <input type="password" id="password" placeholder="Contraseña o PIN" required>
+                </div>
+                <div class="login-options">
+                    <label><input type="checkbox" checked> Recordar mis datos</label>
+                    <a href="#" class="text-muted">¿Olvidó su PIN?</a>
+                </div>
+                <button type="submit" class="btn-primary">
+                    <i class="fa-solid fa-right-to-bracket"></i> Ingresar a mi Finca
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         MÓDULO 2: PANEL DE CONTROL PRINCIPAL
+         ========================================== -->
+    <div id="dashboard-view" class="view">
+        
+        <!-- Fondo oscuro táctil para cerrar el menú lateral -->
+        <div id="sidebar-overlay" class="sidebar-overlay"></div>
+
+        <!-- BARRA LATERAL DE NAVEGACIÓN (SIDEBAR / DRAWER MÓVIL) -->
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-brand">
+                    <div class="logo-circle-badge">
+                        <img src="Gemini_Generated_Image_4fgpvv4fgpvv4fgp.jpg" 
+                             alt="Logo NorteCafé" 
+                             class="brand-logo-icon-crop"
+                             onerror="this.onerror=null; this.style.transform='none'; this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 240 240%22><rect width=%22240%22 height=%22240%22 rx=%2250%22 fill=%22%23ffffff%22/><path d=%22M116 175 C55 175 25 118 38 50 C88 58 116 100 116 175 Z%22 fill=%22%232E7D32%22/><path d=%22M38 50 L116 175 M65 92 L95 78 M52 118 L92 112%22 stroke=%22%23A5D6A7%22 stroke-width=%225%22 stroke-linecap=%22round%22/><rect x=%22124%22 y=%22100%22 width=%2214%22 height=%2270%22 fill=%22%233E2723%22/><rect x=%22144%22 y=%2276%22 width=%2214%22 height=%2294%22 fill=%22%233E2723%22/><rect x=%22164%22 y=%2252%22 width=%2214%22 height=%22118%22 fill=%22%233E2723%22/><rect x=%22184%22 y=%2228%22 width=%2214%22 height=%22130%22 fill=%22%233E2723%22/><path d=%22M120 152 Q160 105 202 36%22 fill=%22none%22 stroke=%22%23D99026%22 stroke-width=%2214%22 stroke-linecap=%22round%22/><polygon points=%22186,32 216,20 212,52%22 fill=%22%23D99026%22/><ellipse cx=%22120%22 cy=%22195%22 rx=%2212%22 ry=%2216%22 fill=%22%233E2723%22/></svg>';">
+                    </div>
+                    <div>
+                        <h3>NorteCafé</h3>
+                        <span class="sidebar-subtitle">Finanzas para su cosecha</span>
+                    </div>
+                </div>
+                <button class="btn-close-sidebar" id="btn-close-sidebar" aria-label="Cerrar menú">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="user-info">
+                <img src="https://ui-avatars.com/api/?name=Joustin+Gallo&background=8B5A2B&color=fff" alt="Perfil">
+                <div>
+                    <p class="name" id="sidebar-user-name">Joustin Gallo</p>
+                    <p class="role" id="sidebar-farm-name">Finca El Recuerdo</p>
+                </div>
+            </div>
+
+            <ul class="nav-links">
+                <li><a href="#" class="nav-btn active" data-target="inicio"><i class="fa-solid fa-house"></i> Inicio y Mercado</a></li>
+                <li><a href="#" class="nav-btn" data-target="calculadora"><i class="fa-solid fa-calculator"></i> Calcular Cosecha (Trilla)</a></li>
+                <li><a href="#" class="nav-btn" data-target="finca"><i class="fa-solid fa-boxes-stacked"></i> Inventario y Lotes</a></li>
+                <li><a href="#" class="nav-btn" data-target="logistica"><i class="fa-solid fa-truck"></i> Fletes Logísticos</a></li>
+                <li><a href="#" class="nav-btn" data-target="trazabilidad"><i class="fa-solid fa-qrcode"></i> Mi Trazabilidad QR</a></li>
+                <li class="divider"></li>
+                <li><a href="#" class="nav-btn" data-target="conexion"><i class="fa-solid fa-wifi"></i> Conexión y Datos</a></li>
+                <li><a href="#" class="nav-btn" data-target="notificaciones"><i class="fa-solid fa-bell"></i> Notificaciones <span class="badge-nav" id="badge-nav-count">2</span></a></li>
+                <li><a href="#" class="nav-btn" data-target="perfil"><i class="fa-solid fa-user-gear"></i> Mi Perfil</a></li>
+                <li class="divider"></li>
+                <li><a href="marketplace.html" class="nav-marketplace"><i class="fa-solid fa-store"></i> Ir al Marketplace B2B</a></li>
+                <li class="logout-link"><a href="#" id="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> Salir del Sistema</a></li>
+            </ul>
+        </nav>
+
+        <!-- ÁREA DE CONTENIDO PRINCIPAL -->
+        <main class="main-content">
+            
+            <!-- CABECERA ESTILO BOCETO (BLANCA LIMPIA CON PÍLDORA EN LÍNEA / OFFLINE) -->
+            <header class="topbar">
+                <div class="topbar-mobile-row">
+                    <div class="topbar-left-group">
+                        <button class="btn-menu-mobile" id="btn-open-sidebar" aria-label="Abrir menú">
+                            <i class="fa-solid fa-bars"></i>
+                        </button>
+
+                        <div class="mobile-brand-header">
+                            <div class="logo-circle-badge topbar-badge-size">
+                                <img src="Gemini_Generated_Image_4fgpvv4fgpvv4fgp.jpg" 
+                                     alt="NorteCafé Logo" 
+                                     class="brand-logo-icon-crop"
+                                     onerror="this.onerror=null; this.style.transform='none'; this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 240 240%22><rect width=%22240%22 height=%22240%22 rx=%2250%22 fill=%22%23ffffff%22/><path d=%22M116 175 C55 175 25 118 38 50 C88 58 116 100 116 175 Z%22 fill=%22%232E7D32%22/><path d=%22M38 50 L116 175 M65 92 L95 78 M52 118 L92 112%22 stroke=%22%23A5D6A7%22 stroke-width=%225%22 stroke-linecap=%22round%22/><rect x=%22124%22 y=%22100%22 width=%2214%22 height=%2270%22 fill=%22%233E2723%22/><rect x=%22144%22 y=%2276%22 width=%2214%22 height=%2294%22 fill=%22%233E2723%22/><rect x=%22164%22 y=%2252%22 width=%2214%22 height=%22118%22 fill=%22%233E2723%22/><rect x=%22184%22 y=%2228%22 width=%2214%22 height=%22130%22 fill=%22%233E2723%22/><path d=%22M120 152 Q160 105 202 36%22 fill=%22none%22 stroke=%22%23D99026%22 stroke-width=%2214%22 stroke-linecap=%22round%22/><polygon points=%22186,32 216,20 212,52%22 fill=%22%23D99026%22/><ellipse cx=%22120%22 cy=%22195%22 rx=%2212%22 ry=%2216%22 fill=%22%233E2723%22/></svg>';">
+                            </div>
+                            <div class="brand-text-block">
+                                <span class="mobile-brand-title">NorteCafé</span>
+                                <span class="mobile-brand-sub">Finanzas para su cosecha</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="topbar-right-group">
+                        <!-- Píldora interactiva En línea / Sin conexión (del boceto) -->
+                        <button type="button" class="status-pill online" id="btn-status-pill" title="Configurar conexión">
+                            <span class="status-dot"></span>
+                            <span id="status-pill-text">En línea</span>
+                        </button>
+
+                        <!-- Campana de notificaciones -->
+                        <button class="btn-icon nav-btn-top" data-target="notificaciones" aria-label="Notificaciones">
+                            <i class="fa-regular fa-bell"></i><span class="badge" id="badge-top-count">2</span>
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Banner flotante de aviso cuando se activa Modo Offline -->
+            <div id="offline-banner" class="offline-banner" style="display: none;">
+                <i class="fa-solid fa-cloud-slash"></i>
+                <span>Modo sin conexión activo · Guardando datos en el teléfono</span>
+            </div>
+
+            <!-- CONTENEDOR DESLIZABLE DE SECCIONES -->
+            <div class="content-wrapper">
+                
+                <!-- ================= 2.1. SECCIÓN: INICIO Y MERCADO (BOCETO + GRÁFICA) ================= -->
+                <section id="inicio" class="content-section active fade-in">
+                    
+                    <!-- Encabezado de saludo y fecha estilo boceto -->
+                    <div class="home-greeting-header">
+                        <div class="greeting-top-row">
+                            <span class="section-eyebrow">RESUMEN DE HOY</span>
+                            <span class="date-pill"><i class="fa-regular fa-calendar"></i> <span id="current-date-pill">15 OCT</span></span>
+                        </div>
+                        <h1 class="greeting-title">Buenos días, <span id="greeting-user-name">Joustin Gallo</span></h1>
+                        <p class="greeting-subtitle">Revise el mercado y valore su próxima cosecha.</p>
+                    </div>
+
+                    <!-- TARJETAS GRANDES DE TRM Y BOLSA DE NY (ESTILO BOCETO) -->
+                    <div class="market-hero-grid">
+                        <!-- Tarjeta 1: TRM Actual -->
+                        <div class="market-hero-card">
+                            <div class="mh-top">
+                                <div class="mh-icon-box">
+                                    <i class="fa-solid fa-money-bill-1-wave"></i>
+                                </div>
+                                <span class="mh-trend-badge up" id="trm-trend-badge">+1,2%</span>
+                            </div>
+                            <span class="mh-label">TRM actual</span>
+                            <h2 class="mh-big-value" id="trm-value">$4.132,20</h2>
+                            <span class="mh-unit">COP por USD</span>
+                            <div class="mh-sync">
+                                <i class="fa-solid fa-arrows-rotate"></i>
+                                <span class="sync-time-label">Última sincronización: hoy, 8:30 a. m.</span>
+                            </div>
+                        </div>
+
+                        <!-- Tarjeta 2: Contrato C de NY -->
+                        <div class="market-hero-card">
+                            <div class="mh-top">
+                                <div class="mh-icon-box">
+                                    <i class="fa-solid fa-mug-hot"></i>
+                                </div>
+                                <span class="mh-trend-badge up" id="ny-trend-badge">+1,2%</span>
+                            </div>
+                            <span class="mh-label">Contrato C de NY</span>
+                            <h2 class="mh-big-value" id="ny-value">224,50</h2>
+                            <span class="mh-unit">centavos USD / lb</span>
+                            <div class="mh-sync">
+                                <i class="fa-solid fa-arrows-rotate"></i>
+                                <span class="sync-time-label">Última sincronización: hoy, 8:30 a. m.</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- BOTÓN DORADO DESTACADO: CALCULAR NUEVA COSECHA -->
+                    <button type="button" class="cta-harvest-card nav-btn" data-target="calculadora">
+                        <div class="cta-icon-box">
+                            <i class="fa-solid fa-calculator"></i>
+                        </div>
+                        <div class="cta-text-box">
+                            <span class="cta-eyebrow">NUEVA EVALUACIÓN</span>
+                            <strong class="cta-main-text">Calcular nueva cosecha</strong>
+                        </div>
+                        <i class="fa-solid fa-arrow-right cta-arrow"></i>
+                    </button>
+
+                    <!-- LOTES RECIENTES GUARDADOS EN EL DISPOSITIVO (DEL BOCETO) -->
+                    <div class="recent-lots-block">
+                        <div class="recent-header-row">
+                            <div>
+                                <span class="section-eyebrow">GUARDADOS EN EL DISPOSITIVO</span>
+                                <h3 class="recent-title">Lotes recientes</h3>
+                            </div>
+                            <a href="#" class="link-view-all nav-btn" data-target="finca">Ver todos</a>
+                        </div>
+
+                        <div class="recent-lots-list">
+                            <div class="recent-lot-item nav-btn" data-target="calculadora">
+                                <div class="rl-icon"><i class="fa-solid fa-mug-hot"></i></div>
+                                <div class="rl-info">
+                                    <h4>Lote La Esperanza</h4>
+                                    <p>24 mayo 2026 · Factor 89,5</p>
+                                </div>
+                                <div class="rl-price">
+                                    <strong>$8.420.000</strong>
+                                    <i class="fa-solid fa-arrow-right"></i>
+                                </div>
+                            </div>
+
+                            <div class="recent-lot-item nav-btn" data-target="calculadora">
+                                <div class="rl-icon"><i class="fa-solid fa-mug-hot"></i></div>
+                                <div class="rl-info">
+                                    <h4>Lote El Porvenir</h4>
+                                    <p>18 mayo 2026 · Factor 91,2</p>
+                                </div>
+                                <div class="rl-price">
+                                    <strong>$9.180.000</strong>
+                                    <i class="fa-solid fa-arrow-right"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TARJETAS DE REFERENCIA DE COMPRA LOCAL -->
+                    <div class="cards-grid mt-3">
+                        <div class="info-card">
+                            <div class="card-icon"><i class="fa-solid fa-sack-dollar"></i></div>
+                            <div>
+                                <h4>Precio Carga Base (125kg)</h4>
+                                <h3 class="highlight" id="precio-base-hoy">$2,150,000 COP</h3>
+                            </div>
+                        </div>
+                        <div class="info-card">
+                            <div class="card-icon warning"><i class="fa-solid fa-scale-unbalanced"></i></div>
+                            <div>
+                                <h4>Pasilla de Finca</h4>
+                                <h3>$35,000 / Arroba</h3>
+                            </div>
+                        </div>
+                        <div class="info-card">
+                            <div class="card-icon success"><i class="fa-solid fa-award"></i></div>
+                            <div>
+                                <h4>Bono Taza Limpia</h4>
+                                <h3>+$50,000 / Carga</h3>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- GRÁFICO HISTÓRICO TRM -->
+                    <div class="chart-container">
+                        <h3>Histórico TRM (Últimos 7 días)</h3>
+                        <div class="chart-canvas-wrapper">
+                            <canvas id="trmChart"></canvas>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ================= 2.2. SECCIÓN: CALCULADORA DE TRILLA ================= -->
+                <section id="calculadora" class="content-section fade-in">
+                    <div class="header-section">
+                        <h2>Análisis de Trilla y Calidad</h2>
+                        <p>Simula el valor real de tu café aplicando la fórmula de Factor de Rendimiento (FR 94) y los descuentos oficiales de Almacafé.</p>
+                    </div>
+                    
+                    <div class="calc-container">
+                        <div class="form-panel">
+                            <h4>Parámetros de la Muestra</h4>
+                            <div class="input-grid">
+                                <div class="input-group">
+                                    <label>Muestra Total (g)</label>
+                                    <input type="number" id="peso-muestra" value="250" readonly>
+                                </div>
+                                <div class="input-group">
+                                    <label>Almendra Sana Excelso (g)</label>
+                                    <input type="number" id="peso-excelso" inputmode="decimal" placeholder="Ej. 185">
+                                </div>
+                                <div class="input-group">
+                                    <label>Broca / Daño por insectos (g)</label>
+                                    <input type="number" id="peso-broca" inputmode="decimal" placeholder="Ej. 12">
+                                </div>
+                                <div class="input-group">
+                                    <label>Pasilla / Defectos (g)</label>
+                                    <input type="number" id="peso-pasilla" inputmode="decimal" placeholder="Ej. 25">
+                                </div>
+                            </div>
+                            <button id="btn-calcular" class="btn-primary mt-3"><i class="fa-solid fa-gears"></i> Simular Liquidación Exacta</button>
+                        </div>
+                        
+                        <div class="result-panel">
+                            <h4>Proyección Financiera</h4>
+                            <div class="result-box">
+                                <span>Factor de Rendimiento (FR):</span>
+                                <span class="value" id="res-fr">0.00</span>
+                            </div>
+                            <div class="result-box alert">
+                                <span>Penalización por Defectos:</span>
+                                <span class="value text-danger" id="res-descuento">-$0</span>
+                            </div>
+                            <div class="result-box total">
+                                <span>Precio Neto a Pagar x Carga:</span>
+                                <span class="value text-success" id="res-precio">$0</span>
+                            </div>
+                            <p class="text-muted text-center mt-3" style="font-size: 12px;">*Funciona 100% sin señal. Cálculos sujetos a verificación en punto de compra.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ================= 2.3. SECCIÓN: FLETES LOGÍSTICOS ================= -->
+                <section id="logistica" class="content-section fade-in">
+                    <div class="header-section">
+                        <h2>Gestión de Fletes y Transporte</h2>
+                        <p>Calcula el costo logístico de trasladar tu producción desde la finca hasta los centros de acopio.</p>
+                    </div>
+                    
+                    <div class="logistics-container">
+                        <div class="form-panel">
+                            <div class="input-group">
+                                <label>Municipio de Origen</label>
+                                <select id="mun-origen">
+                                    <option value="15000">Toledo</option>
+                                    <option value="12000">Salazar de las Palmas</option>
+                                    <option value="18000">Convención</option>
+                                    <option value="8000">Bochalema</option>
+                                    <option value="25000">Tibú</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label>Punto de Acopio (Destino)</label>
+                                <select id="mun-destino">
+                                    <option value="Cucuta">Cooperativa Cúcuta</option>
+                                    <option value="Pamplona">Almacafé Pamplona</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label>Cantidad de Cargas a enviar (125kg c/u)</label>
+                                <input type="number" id="cant-cargas" inputmode="numeric" value="1" min="1">
+                            </div>
+                            <button id="btn-flete" class="btn-secondary mt-3"><i class="fa-solid fa-map-location-dot"></i> Calcular Costo de Flete</button>
+                        </div>
+                        
+                        <div class="result-panel">
+                            <h4>Resumen Logístico</h4>
+                            <div class="route-map">
+                                <i class="fa-solid fa-tractor fa-2x"></i>
+                                <span class="dots">.............</span>
+                                <i class="fa-solid fa-warehouse fa-2x"></i>
+                            </div>
+                            <h2 class="text-center text-danger" id="res-flete">$0 COP</h2>
+                            <p class="text-center text-muted">Costo total descontable de la ganancia neta.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ================= 2.4. SECCIÓN: TRAZABILIDAD ================= -->
+                <section id="trazabilidad" class="content-section fade-in">
+                    <div class="header-section">
+                        <h2>Trazabilidad Farm-to-Cup</h2>
+                        <p>Genera el pasaporte digital de tu lote para conectar directamente con compradores de especialidad en el Marketplace.</p>
+                    </div>
+                    <div class="traceability-grid">
+                        <div class="qr-card">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=FincaElRecuerdo-LoteA01-Cucuta" alt="Código QR del Lote">
+                            <button class="btn-primary mt-3"><i class="fa-solid fa-print"></i> Descargar Etiqueta QR</button>
+                        </div>
+                        <div class="details-card">
+                            <h3>Lote Activo: #L-2026-08A</h3>
+                            <ul class="trace-list">
+                                <li><strong>Variedad:</strong> Castillo / Cenicafé 1</li>
+                                <li><strong>Altitud:</strong> 1,650 m.s.n.m</li>
+                                <li><strong>Proceso:</strong> Lavado tradicional (Fermentación 24h)</li>
+                                <li><strong>Fecha de Recolección:</strong> 15 de Agosto de 2026</li>
+                                <li><strong>Certificación:</strong> Rainforest Alliance</li>
+                            </ul>
+                            <div class="alert-box mt-3 success">
+                                <i class="fa-solid fa-check-circle"></i> Perfil digital verificado y listo para oferta.
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ================= 2.5. SECCIÓN: GESTIÓN DE FINCA (INVENTARIO) ================= -->
+                <section id="finca" class="content-section fade-in">
+                    <div class="header-section">
+                        <h2>Inventario y Lotes Productivos</h2>
+                        <p>Administra la información agrícola, tamaño de tu predio y variedades sembradas. Funciona con almacenamiento local offline.</p>
+                    </div>
+                    
+                    <div class="cards-grid">
+                        <div class="form-panel">
+                            <h4 id="form-lote-title">Registrar Nuevo Lote</h4>
+                            <form id="form-lote">
+                                <input type="hidden" id="lote-id" value="">
+                                <div class="input-group">
+                                    <label>Nombre o Número del Lote</label>
+                                    <input type="text" id="lote-nombre" placeholder="Ej. Lote El Mirador" required>
+                                </div>
+                                <div class="input-grid">
+                                    <div class="input-group">
+                                        <label>Hectáreas (Ha)</label>
+                                        <input type="number" step="0.1" id="lote-area" inputmode="decimal" placeholder="Ej. 2.5" required>
+                                    </div>
+                                    <div class="input-group">
+                                        <label>Altitud (m.s.n.m)</label>
+                                        <input type="number" id="lote-altitud" inputmode="numeric" placeholder="Ej. 1700">
+                                    </div>
+                                </div>
+                                <div class="input-group">
+                                    <label>Variedad Principal</label>
+<select id="lote-variedad">
+    <optgroup label="Variedades Resistentes (FNC / Cenicafé)">
+        <option value="Castillo">Castillo</option>
+        <option value="Cenicafé 1">Cenicafé 1</option>
+        <option value="Colombia">Variedad Colombia</option>
+        <option value="Tabi">Tabi</option>
+        <option value="Catimore">Catimore</option>
+    </optgroup>
+    <optgroup label="Tradicionales y Regionales">
+        <option value="Caturra">Caturra</option>
+        <option value="Típica">Típica (Typica)</option>
+        <option value="Maragogipe">Maragogipe (Especial Salazar N.S.)</option>
+        <option value="Bourbon Rojo">Bourbon Rojo</option>
+    </optgroup>
+    <optgroup label="Exóticas y Alta Especialidad (SCA 85+)">
+        <option value="Bourbon Rosado">Bourbon Rosado</option>
+        <option value="Bourbon Amarillo">Bourbon Amarillo</option>
+        <option value="Geisha">Geisha / Gesha</option>
+        <option value="Pacamara">Pacamara</option>
+        <option value="Java">Java</option>
+        <option value="Laurina">Laurina</option>
+    </optgroup>
+</select>
+                                </div>
+                                <button type="submit" class="btn-primary mt-3" id="btn-guardar-lote"><i class="fa-solid fa-plus"></i> Guardar Lote</button>
+                            </form>
+                        </div>
+                        
+                        <div class="result-panel">
+                            <h4>Lotes Registrados en el Dispositivo</h4>
+                            <div class="table-responsive">
+                                <table class="data-table" id="tabla-lotes">
+                                    <thead>
+                                        <tr>
+                                            <th>Nombre</th>
+                                            <th>Variedad</th>
+                                            <th>Área (Ha)</th>
+                                            <th>Acción</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr data-id="1">
+                                            <td class="td-nombre">Lote Principal</td>
+                                            <td class="td-variedad">Cenicafé 1</td>
+                                            <td class="td-area">3.0</td>
+                                            <td class="td-altitud" style="display:none;">1650</td>
+                                            <td><button class="btn-sm btn-edit" title="Editar Lote"><i class="fa-solid fa-pen"></i></button></td>
+                                        </tr>
+                                        <tr data-id="2">
+                                            <td class="td-nombre">Lote El Río</td>
+                                            <td class="td-variedad">Castillo</td>
+                                            <td class="td-area">1.5</td>
+                                            <td class="td-altitud" style="display:none;">1500</td>
+                                            <td><button class="btn-sm btn-edit" title="Editar Lote"><i class="fa-solid fa-pen"></i></button></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="alert-box mt-3 warning" id="alert-total-area">
+                                <i class="fa-solid fa-info-circle"></i> Tienes <span id="total-area-value">4.5</span> hectáreas en producción activa.
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ================= 2.6. SECCIÓN: CONEXIÓN Y DATOS (AJUSTES DEL BOCETO) ================= -->
+                <section id="conexion" class="content-section fade-in">
+                    <div class="breadcrumb-nav">
+                        <a href="#" class="nav-btn" data-target="inicio">Inicio</a>
+                        <span>/</span>
+                        <strong class="active-crumb">Ajustes</strong>
+                    </div>
+
+                    <span class="section-eyebrow">PREFERENCIAS</span>
+                    <h2 class="settings-big-title">Conexión y datos</h2>
+                    <p class="settings-subtitle">Controle cómo se sincroniza la información de su finca.</p>
+
+                    <!-- Tarjeta de Interruptor Online / Offline idéntica al boceto -->
+                    <div class="connection-toggle-card">
+                        <div class="conn-icon-box" id="conn-wifi-icon-box">
+                            <i class="fa-solid fa-wifi" id="conn-wifi-icon"></i>
+                        </div>
+                        <div class="conn-text-box">
+                            <h4 id="conn-title-text">Conexión activa</h4>
+                            <p id="conn-desc-text">Los datos nuevos se sincronizarán.</p>
+                        </div>
+                        <label class="ios-switch">
+                            <input type="checkbox" id="toggle-online-switch" checked>
+                            <span class="ios-slider"></span>
+                        </label>
+                    </div>
+
+                    <!-- Tarjeta crema de garantía Offline idéntica al boceto -->
+                    <div class="offline-guarantee-card">
+                        <i class="fa-solid fa-check"></i>
+                        <div>
+                            <h4>Siempre puede seguir trabajando</h4>
+                            <p>La calculadora y su inventario funcionan incluso sin señal.</p>
+                        </div>
+                    </div>
+
+                    <!-- Accesos rápidos a las demás herramientas desde Ajustes -->
+                    <div class="form-panel mt-3">
+                        <h4>Más Herramientas del Sistema</h4>
+                        <div class="settings-quick-links">
+                            <button type="button" class="settings-link-btn nav-btn" data-target="perfil">
+                                <i class="fa-solid fa-user-gear"></i>
+                                <span>Configurar Datos del Caficultor y Finca</span>
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </button>
+                            <button type="button" class="settings-link-btn nav-btn" data-target="logistica">
+                                <i class="fa-solid fa-truck"></i>
+                                <span>Calculadora de Fletes y Transporte</span>
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </button>
+                            <button type="button" class="settings-link-btn nav-btn" data-target="trazabilidad">
+                                <i class="fa-solid fa-qrcode"></i>
+                                <span>Pasaporte Digital y Código QR</span>
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </button>
+                            <a href="marketplace.html" class="settings-link-btn marketplace-link-btn">
+                                <i class="fa-solid fa-store"></i>
+                                <span>Abrir Seller Center (Marketplace B2B)</span>
+                                <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                            </a>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ================= 2.7. SECCIÓN: MI PERFIL ================= -->
+                <section id="perfil" class="content-section fade-in">
+                    <div class="header-section">
+                        <h2>Configuración del Caficultor</h2>
+                        <p>Actualiza tu información personal, datos de contacto y el nombre de tu finca para el sistema.</p>
+                    </div>
+
+                    <div class="profile-container">
+                        <div class="form-panel">
+                            <h4>Información Personal y de la Finca</h4>
+                            <div class="profile-header-edit">
+                                <img src="https://ui-avatars.com/api/?name=Joustin+Gallo&background=8B5A2B&color=fff" alt="Foto Perfil">
+                                <button type="button" class="btn-sm"><i class="fa-solid fa-camera"></i> Cambiar Foto</button>
+                            </div>
+                            <form id="form-perfil">
+                                <div class="input-group mt-3">
+                                    <label>Nombre de la Finca (Actualiza todo el sistema)</label>
+                                    <input type="text" id="input-farm-name" value="Finca El Recuerdo" required>
+                                </div>
+                                <div class="input-grid mt-3">
+                                    <div class="input-group">
+                                        <label>Nombres y Apellidos</label>
+                                        <input type="text" id="input-user-name" value="Joustin Gallo" required>
+                                    </div>
+                                    <div class="input-group">
+                                        <label>Cédula de Ciudadanía</label>
+                                        <input type="text" value="1090000000" disabled>
+                                    </div>
+                                    <div class="input-group">
+                                        <label>Número de Celular</label>
+                                        <input type="tel" value="3200000000">
+                                    </div>
+                                    <div class="input-group">
+                                        <label>Correo Electrónico</label>
+                                        <input type="email" placeholder="Opcional">
+                                    </div>
+                                </div>
+                                <hr class="divider">
+                                <h4>Datos Financieros y Cooperativa</h4>
+                                <div class="input-grid mt-3">
+                                    <div class="input-group">
+                                        <label>Afiliado a Cooperativa</label>
+                                        <select>
+                                            <option>Sí, Cooperativa Norte de Santander</option>
+                                            <option>No, Venta Independiente</option>
+                                        </select>
+                                    </div>
+                                    <div class="input-group">
+                                        <label>Medio de Pago Preferido</label>
+                                        <select>
+                                            <option>Transferencia Bancaria</option>
+                                            <option>Cheque de Gerencia</option>
+                                            <option>Efectivo</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn-secondary mt-3"><i class="fa-solid fa-floppy-disk"></i> Guardar Cambios</button>
+                            </form>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ================= 2.8. SECCIÓN: NOTIFICACIONES ================= -->
+                <section id="notificaciones" class="content-section fade-in">
+                    <div class="header-section">
+                        <h2>Centro de Notificaciones</h2>
+                        <p>Mantente al día con las alertas de mercado, resoluciones institucionales y reportes técnicos.</p>
+                    </div>
+
+                    <div class="notifications-container">
+                        <div class="notification-card unread">
+                            <div class="notif-icon"><i class="fa-solid fa-arrow-trend-up"></i></div>
+                            <div class="notif-content">
+                                <h4>Alza en la Bolsa de Nueva York</h4>
+                                <p>El contrato C superó los 224,50 centavos USD/lb. Es un excelente momento para liquidar tus lotes almacenados.</p>
+                                <span class="notif-time">Hace 2 horas</span>
+                            </div>
+                            <button class="btn-mark-read" title="Marcar como leída"><i class="fa-solid fa-check"></i></button>
+                        </div>
+
+                        <div class="notification-card unread">
+                            <div class="notif-icon institutional"><i class="fa-solid fa-building-columns"></i></div>
+                            <div class="notif-content">
+                                <h4>SENA CEDRUM: Actualización de Apoyos</h4>
+                                <p>Revisa la Resolución 54-00584 para la validación de apoyos de sostenimiento logístico en zonas rurales.</p>
+                                <span class="notif-time">Ayer, 09:30 AM</span>
+                            </div>
+                            <button class="btn-mark-read" title="Marcar como leída"><i class="fa-solid fa-check"></i></button>
+                        </div>
+
+                        <div class="notification-card">
+                            <div class="notif-icon danger"><i class="fa-solid fa-cloud-showers-heavy"></i></div>
+                            <div class="notif-content">
+                                <h4>Alerta Climática: Lluvias en Toledo</h4>
+                                <p>Se pronostican fuertes precipitaciones. Asegura las camas de secado para evitar defectos por humedad en tu pergamino.</p>
+                                <span class="notif-time">Hace 3 días</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+        </main>
+
+        <!-- ==========================================
+             BARRA INFERIOR DE NAVEGACIÓN (ESTILO BOCETO)
+             ========================================== -->
+        <nav class="mobile-bottom-nav">
+            <a href="#" class="nav-btn bottom-nav-item active" data-target="inicio">
+                <i class="fa-solid fa-house"></i>
+                <span>Inicio</span>
+            </a>
+            <a href="#" class="nav-btn bottom-nav-item" data-target="calculadora">
+                <i class="fa-solid fa-calculator"></i>
+                <span>Calcular</span>
+            </a>
+            <a href="#" class="nav-btn bottom-nav-item" data-target="finca">
+                <i class="fa-solid fa-box-archive"></i>
+                <span>Inventario</span>
+            </a>
+            <a href="#" class="nav-btn bottom-nav-item" data-target="conexion">
+                <i class="fa-solid fa-gear"></i>
+                <span>Ajustes</span>
+            </a>
+        </nav>
+
+    </div>
+
+    <!-- Enlace al archivo de lógica JavaScript principal -->
+    <script src="app.js"></script>
+</body>
+</html>

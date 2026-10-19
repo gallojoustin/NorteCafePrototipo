@@ -1,0 +1,1479 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#1B120E">
+    <title>NorteCafé Market - Seller Center & Comprador B2B</title>
+    <!-- Librerías Externas: FontAwesome y Chart.js -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root {
+            --bg-dark-main: #140E0B;
+            --bg-dark-card: #221712;
+            --bg-dark-elevated: #2E1F18;
+            --border-coffee: rgba(217, 144, 38, 0.24);
+            --gold-primary: #D99026;
+            --gold-bright: #F5B041;
+            --green-agtech: #2E7D32;
+            --green-bright: #66BB6A;
+            --blue-escrow: #1976D2;
+            --text-white: #FAF6F2;
+            --text-muted: #B8A99E;
+            --danger: #EF5350;
+            --radius-lg: 16px;
+            --radius-md: 12px;
+            --bottom-height: 68px;
+            --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            background-color: #090604;
+            color: var(--text-white);
+            min-height: 100%;
+            overflow-x: hidden;
+        }
+
+        body.market-mobile-body {
+            max-width: 480px;
+            margin: 0 auto;
+            min-height: 100vh;
+            background-color: var(--bg-dark-main);
+            position: relative;
+            box-shadow: 0 0 45px rgba(0, 0, 0, 0.85);
+            overflow-x: hidden;
+        }
+
+        .mt-2 { margin-top: 10px !important; }
+        .mt-3 { margin-top: 16px !important; }
+        .mb-2 { margin-bottom: 10px !important; }
+
+        .fade-in { animation: fadeIn 0.28s ease-out forwards; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ==========================================
+           1. SELECTOR DE ROL SUPERIOR (VENDEDOR VS COMPRADOR)
+           ========================================== */
+        .role-switcher-bar {
+            background: #0E0907;
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border-coffee);
+            gap: 6px;
+        }
+
+        .role-label {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .role-pills {
+            display: flex;
+            background: #1E140F;
+            padding: 3px;
+            border-radius: 10px;
+            border: 1px solid var(--border-coffee);
+        }
+
+        .role-pill-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 5px 10px;
+            border-radius: 7px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .role-pill-btn.active {
+            background: var(--gold-primary);
+            color: #140E0B;
+        }
+
+        /* ==========================================
+           2. DRAWER LATERAL
+           ========================================== */
+        .sidebar-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.72);
+            backdrop-filter: blur(2px);
+            z-index: 1900;
+            opacity: 0;
+            pointer-events: none;
+            transition: var(--transition);
+        }
+
+        .sidebar-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .market-sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 285px;
+            height: 100vh;
+            background: linear-gradient(180deg, #1E140F 0%, #120C09 100%);
+            border-right: 1px solid var(--border-coffee);
+            z-index: 2000;
+            transform: translateX(-105%);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .market-sidebar.open { transform: translateX(0); }
+
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px 16px;
+            border-bottom: 1px solid var(--border-coffee);
+        }
+
+        .sidebar-brand { display: flex; align-items: center; gap: 10px; }
+
+        .brand-logo {
+            width: 42px !important;
+            height: 42px !important;
+            border-radius: 10px;
+            background: #FFFFFF;
+            padding: 3px;
+            object-fit: contain;
+        }
+
+        .badge-gold { font-size: 0.72rem; color: var(--gold-bright); font-weight: 700; }
+
+        .btn-close-drawer {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: #FFFFFF;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .seller-profile-box {
+            margin: 14px;
+            padding: 14px;
+            background: var(--bg-dark-elevated);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-coffee);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .seller-profile-box img {
+            width: 48px !important;
+            height: 48px !important;
+            border-radius: 50%;
+            border: 2px solid var(--gold-primary);
+        }
+
+        .seller-rating { margin-top: 4px; font-size: 0.74rem; color: var(--gold-bright); }
+
+        .market-nav-links { list-style: none; padding: 8px 12px 24px; flex: 1; }
+        .market-nav-links li { margin-bottom: 5px; }
+        .market-nav-links li.divider { height: 1px; background: var(--border-coffee); margin: 12px 4px; }
+
+        .market-nav-links a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 14px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.88rem;
+            font-weight: 600;
+            border-radius: var(--radius-md);
+        }
+
+        .market-nav-links a i { width: 20px; color: var(--gold-primary); text-align: center; }
+
+        .market-nav-links a.active,
+        .market-nav-links a:hover {
+            background: var(--gold-primary);
+            color: #140E0B;
+            font-weight: 700;
+        }
+
+        .market-nav-links a.active i,
+        .market-nav-links a:hover i { color: #140E0B; }
+
+        .btn-return-app {
+            background: rgba(46, 125, 50, 0.2) !important;
+            border: 1px solid var(--green-bright);
+            color: #A5D6A7 !important;
+        }
+
+        /* ==========================================
+           3. TOPBAR MÓVIL
+           ========================================== */
+        .market-topbar {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: #1B120E;
+            border-bottom: 1px solid var(--border-coffee);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
+        }
+
+        .topbar-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 14px;
+            height: 60px;
+        }
+
+        .btn-top-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--border-coffee);
+            color: var(--text-white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.05rem;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .topbar-brand { display: flex; align-items: center; gap: 10px; }
+
+        .topbar-logo {
+            width: 36px !important;
+            height: 36px !important;
+            border-radius: 8px;
+            background: #FFFFFF;
+            padding: 2px;
+            object-fit: contain;
+        }
+
+        .topbar-brand h1 { font-size: 1.05rem; font-weight: 800; line-height: 1.1; }
+        .topbar-brand h1 span { color: var(--gold-primary); }
+        .topbar-brand small { font-size: 0.68rem; color: var(--text-muted); display: block; }
+
+        .seller-ticker {
+            background: #110B08;
+            padding: 7px 14px;
+            font-size: 0.73rem;
+            display: flex;
+            justify-content: space-between;
+            color: var(--text-muted);
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .seller-ticker strong { color: var(--gold-bright); }
+
+        /* ==========================================
+           4. CONTENIDO, TARJETAS Y FORMULARIOS
+           ========================================== */
+        .market-content-wrapper {
+            padding: 16px 14px calc(var(--bottom-height) + 26px);
+        }
+
+        .market-section { display: none; }
+        .market-section.active { display: block; }
+
+        .sec-header { margin-bottom: 14px; }
+        .sec-header h2 { font-size: 1.22rem; font-weight: 800; }
+        .sec-header p { font-size: 0.8rem; color: var(--text-muted); margin-top: 3px; line-height: 1.35; }
+
+        .kpi-grid { display: flex; flex-direction: column; gap: 10px; }
+        .kpi-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+        .kpi-card {
+            background: var(--bg-dark-card);
+            border: 1px solid var(--border-coffee);
+            border-radius: var(--radius-lg);
+            padding: 13px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .kpi-card.highlight-gold {
+            background: linear-gradient(135deg, #2E1F18 0%, #3E2723 100%);
+            border-color: var(--gold-primary);
+        }
+
+        .kpi-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: rgba(217, 144, 38, 0.18);
+            color: var(--gold-bright);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .kpi-icon.green { background: rgba(46, 125, 50, 0.24); color: var(--green-bright); }
+        .kpi-card span { font-size: 0.74rem; color: var(--text-muted); display: block; }
+        .kpi-card h3 { font-size: 1.08rem; font-weight: 800; margin-top: 2px; }
+
+        .market-card {
+            background: var(--bg-dark-card);
+            border: 1px solid var(--border-coffee);
+            border-radius: var(--radius-lg);
+            padding: 15px;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.28);
+        }
+
+        .market-card h4 {
+            font-size: 0.94rem;
+            color: var(--gold-bright);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .market-chart-box { position: relative; width: 100%; height: 200px; max-height: 200px; }
+
+        .m-input-group { display: flex; flex-direction: column; margin-bottom: 11px; }
+        .m-input-group label { font-size: 0.78rem; color: var(--text-muted); font-weight: 600; margin-bottom: 5px; }
+
+        .m-input-group input,
+        .m-input-group select,
+        .m-input-group textarea {
+            width: 100%;
+            padding: 11px 12px;
+            border-radius: var(--radius-md);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            background: #160F0C;
+            color: var(--text-white);
+            font-size: 0.9rem;
+            outline: none;
+        }
+
+        .m-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+        /* Caja para subir Certificado Q-Grader / SCA por Lote */
+        .cert-upload-box {
+            background: rgba(25, 118, 210, 0.12);
+            border: 1px dashed #64B5F6;
+            border-radius: var(--radius-md);
+            padding: 10px 12px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .cert-upload-info span {
+            display: block;
+            font-size: 0.75rem;
+            color: #90CAF9;
+            font-weight: 700;
+        }
+
+        .cert-upload-info small {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+
+        .btn-upload-cert {
+            background: #1976D2;
+            color: #FFFFFF;
+            padding: 7px 11px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .sugeridor-box {
+            background: rgba(46, 125, 50, 0.16);
+            border: 1px dashed var(--green-bright);
+            border-radius: var(--radius-md);
+            padding: 10px 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+            margin: 6px 0 12px;
+        }
+
+        .sugeridor-box span { display: block; font-size: 0.72rem; color: #A5D6A7; }
+        .sugeridor-box strong { font-size: 0.9rem; color: #FFFFFF; }
+
+        .btn-use-suggested {
+            background: var(--green-agtech);
+            color: #FFFFFF;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .btn-gold {
+            width: 100%;
+            min-height: 46px;
+            background: linear-gradient(135deg, var(--gold-primary) 0%, #B87314 100%);
+            color: #140E0B;
+            border: none;
+            border-radius: var(--radius-md);
+            font-size: 0.92rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .catalog-list { display: flex; flex-direction: column; gap: 12px; }
+
+        .lot-item-card {
+            background: var(--bg-dark-card);
+            border: 1px solid var(--border-coffee);
+            border-radius: var(--radius-lg);
+            padding: 14px;
+        }
+
+        .lot-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+        .lot-top h4 { color: var(--text-white); font-size: 0.95rem; margin-bottom: 3px; }
+
+        .sca-pill {
+            background: var(--gold-primary);
+            color: #140E0B;
+            font-size: 0.73rem;
+            font-weight: 800;
+            padding: 3px 8px;
+            border-radius: 8px;
+            white-space: nowrap;
+        }
+
+        .verified-cert-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(46, 125, 50, 0.22);
+            border: 1px solid var(--green-bright);
+            color: #A5D6A7;
+            font-size: 0.7rem;
+            padding: 3px 8px;
+            border-radius: 6px;
+            margin-top: 5px;
+            font-weight: 600;
+        }
+
+        .lot-meta { font-size: 0.79rem; color: var(--text-muted); margin: 5px 0; display: block; }
+
+        .lot-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .lot-price { font-size: 0.96rem; font-weight: 800; color: var(--green-bright); }
+        .lot-actions { display: flex; gap: 6px; }
+
+        .btn-lot-act {
+            background: var(--bg-dark-elevated);
+            color: var(--text-white);
+            border: 1px solid var(--border-coffee);
+            padding: 6px 9px;
+            border-radius: 8px;
+            font-size: 0.74rem;
+            cursor: pointer;
+        }
+
+        /* ==========================================
+           5. ESCROW, TRANSPORTE Y RECLAMOS (OBSERVACIONES 2, 3 y 4)
+           ========================================== */
+        .escrow-banner {
+            background: linear-gradient(135deg, rgba(25, 118, 210, 0.22) 0%, rgba(13, 71, 161, 0.35) 100%);
+            border: 1px solid #42A5F5;
+            border-radius: var(--radius-lg);
+            padding: 14px;
+            margin-bottom: 14px;
+        }
+
+        .escrow-banner h4 { color: #90CAF9; font-size: 0.92rem; margin-bottom: 6px; }
+        .escrow-banner p { font-size: 0.79rem; color: var(--text-muted); line-height: 1.38; }
+
+        .escrow-steps {
+            display: flex;
+            justify-content: space-between;
+            margin: 14px 0 8px;
+            position: relative;
+        }
+
+        .escrow-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            flex: 1;
+            font-size: 0.68rem;
+            color: var(--text-muted);
+            gap: 4px;
+        }
+
+        .escrow-step i {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #160F0C;
+            border: 2px solid var(--border-coffee);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .escrow-step.done i {
+            background: var(--green-agtech);
+            border-color: var(--green-bright);
+            color: #FFFFFF;
+        }
+
+        .escrow-step.current i {
+            background: var(--gold-primary);
+            border-color: var(--gold-bright);
+            color: #140E0B;
+        }
+
+        .order-action-row {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .btn-release-escrow {
+            flex: 1;
+            background: var(--green-agtech);
+            color: #FFFFFF;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .btn-claim-dispute {
+            flex: 1;
+            background: rgba(239, 83, 80, 0.18);
+            border: 1px solid var(--danger);
+            color: #FFCDD2;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        /* ==========================================
+           6. FOTOS, VITRINA Y MODO COMPRADOR (OTRAS FINCAS)
+           ========================================== */
+        .photos-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .photo-slot {
+            background: #160F0C;
+            border: 1px solid var(--border-coffee);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            text-align: center;
+            padding-bottom: 8px;
+        }
+        .photo-slot img { width: 100%; height: 105px; object-fit: cover; display: block; margin-bottom: 8px; }
+        .btn-upload-photo {
+            display: inline-block;
+            background: var(--bg-dark-elevated);
+            color: var(--gold-bright);
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 0.73rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .cert-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .cert-check {
+            background: #160F0C;
+            border: 1px solid var(--border-coffee);
+            border-radius: 10px;
+            padding: 9px;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-size: 0.76rem;
+            cursor: pointer;
+        }
+
+        .filter-bar-buyer {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+
+        .filter-bar-buyer select {
+            padding: 9px 10px;
+            border-radius: 10px;
+            background: var(--bg-dark-card);
+            color: var(--text-white);
+            border: 1px solid var(--border-coffee);
+            font-size: 0.78rem;
+        }
+
+        /* ==========================================
+           7. BARRA DE NAVEGACIÓN INFERIOR MÓVIL
+           ========================================== */
+        .market-bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 480px;
+            height: var(--bottom-height);
+            background: #1B120E;
+            border-top: 1px solid var(--border-coffee);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 1500;
+        }
+
+        .b-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            color: var(--text-muted);
+            font-size: 0.68rem;
+            font-weight: 600;
+            flex: 1;
+            height: 100%;
+            gap: 4px;
+        }
+
+        .b-item i { font-size: 1.12rem; }
+        .b-item.active { color: var(--gold-bright); font-weight: 800; }
+    </style>
+</head>
+<body class="market-mobile-body">
+
+    <div id="market-overlay" class="sidebar-overlay"></div>
+
+    <!-- ==========================================
+         MENÚ LATERAL DESPLEGABLE (SELLER DRAWER)
+         ========================================== -->
+    <nav class="market-sidebar" id="market-sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-brand">
+                <img src="Gemini_Generated_Image_4fgpvv4fgpvv4fgp.jpg" 
+                     alt="Logo NorteCafé" width="42" height="42" class="brand-logo"
+                     onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2242%22 height=%2242%22 viewBox=%220 0 200 200%22><rect width=%22100%25%22 height=%22100%25%22 fill=%22%23ffffff%22 rx=%2232%22/><path d=%22M95 150 C50 150 25 100 35 45 C75 50 95 85 95 150 Z%22 fill=%22%232E7D32%22/><rect x=%22102%22 y=%2285%22 width=%2212%22 height=%2260%22 fill=%22%233E2723%22/><rect x=%22138%22 y=%2245%22 width=%2212%22 height=%22100%22 fill=%22%233E2723%22/><path d=%22M100 130 Q135 90 172 32%22 fill=%22none%22 stroke=%22%23D99026%22 stroke-width=%2212%22/></svg>';">
+                <div>
+                    <h3>NorteCafé B2B</h3>
+                    <span class="badge-gold" id="drawer-role-badge">Perfil: Caficultor Vendedor</span>
+                </div>
+            </div>
+            <button class="btn-close-drawer" id="btn-close-market-drawer"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+
+        <div class="seller-profile-box">
+            <img src="https://ui-avatars.com/api/?name=Joustin+Gallo&background=D99026&color=1B120E" width="48" height="48" alt="Usuario">
+            <div>
+                <h4 id="seller-name-display">Joustin Gallo</h4>
+                <p id="seller-farm-display">Finca El Recuerdo · Toledo</p>
+                <div class="seller-rating">★★★★★ <span>4.9 (Verificado)</span></div>
+            </div>
+        </div>
+
+        <ul class="market-nav-links">
+            <li><a href="#" class="m-nav-btn active" data-target="sec-ventas"><i class="fa-solid fa-chart-line"></i> Panel de Ventas</a></li>
+            <li><a href="#" class="m-nav-btn" data-target="sec-catalogo"><i class="fa-solid fa-boxes-stacked"></i> Publicar Lote y SCA</a></li>
+            <li><a href="#" class="m-nav-btn" data-target="sec-explorar"><i class="fa-solid fa-compass"></i> Explorar Otras Fincas (Comprador)</a></li>
+            <li><a href="#" class="m-nav-btn" data-target="sec-escrow"><i class="fa-solid fa-shield-halved"></i> Pagos Escrow y Reclamos</a></li>
+            <li><a href="#" class="m-nav-btn" data-target="sec-historia"><i class="fa-solid fa-seedling"></i> Historia y Sellos Finca</a></li>
+            <li class="divider"></li>
+            <li><a href="index.html" class="btn-return-app"><i class="fa-solid fa-arrow-left"></i> Volver a Gestión Finca</a></li>
+        </ul>
+    </nav>
+
+    <main class="market-main">
+        
+        <!-- CABECERA MÓVIL CON CONMUTADOR DE PERFIL (OBSERVACIÓN 5 DEL INGENIERO) -->
+        <header class="market-topbar">
+            <!-- Barra superior para alternar entre Perfil Vendedor y Perfil Comprador -->
+            <div class="role-switcher-bar">
+                <span class="role-label"><i class="fa-solid fa-user-check"></i> Vista activa:</span>
+                <div class="role-pills">
+                    <button type="button" class="role-pill-btn active" id="btn-role-vendedor">Caficultor (Vendedor)</button>
+                    <button type="button" class="role-pill-btn" id="btn-role-comprador">Comprador (Ver Fincas)</button>
+                </div>
+            </div>
+
+            <div class="topbar-row">
+                <button class="btn-top-icon" id="btn-open-market-drawer"><i class="fa-solid fa-bars"></i></button>
+
+                <div class="topbar-brand">
+                    <img src="Gemini_Generated_Image_4fgpvv4fgpvv4fgp.jpg" 
+                         alt="Logo" width="36" height="36" class="topbar-logo"
+                         onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2236%22 height=%2236%22 viewBox=%220 0 200 200%22><rect width=%22100%25%22 height=%22100%25%22 fill=%22%23ffffff%22 rx=%2232%22/><path d=%22M95 150 C50 150 25 100 35 45 C75 50 95 85 95 150 Z%22 fill=%22%232E7D32%22/><rect x=%22102%22 y=%2285%22 width=%2212%22 height=%2260%22 fill=%22%233E2723%22/><rect x=%22138%22 y=%2245%22 width=%2212%22 height=%22100%22 fill=%22%233E2723%22/><path d=%22M100 130 Q135 90 172 32%22 fill=%22none%22 stroke=%22%23D99026%22 stroke-width=%2212%22/></svg>';">
+                    <div>
+                        <h1>NorteCafé <span>Market</span></h1>
+                        <small id="header-mode-subtitle">Seller Center · Venta Directa</small>
+                    </div>
+                </div>
+
+                <a href="index.html" class="btn-top-icon" title="Volver a mi Finca"><i class="fa-solid fa-house-user"></i></a>
+            </div>
+
+            <div class="seller-ticker">
+                <span><i class="fa-solid fa-shield-halved"></i> Pago: <strong>Custodia Escrow</strong></span>
+                <span><i class="fa-solid fa-certificate"></i> Calidad: <strong>Verificación Q-Grader</strong></span>
+            </div>
+        </header>
+
+        <div class="market-content-wrapper">
+
+            <!-- ================= 1. PANEL DE VENTAS (VENDEDOR) ================= -->
+            <section id="sec-ventas" class="market-section active fade-in">
+                <div class="sec-header">
+                    <h2>Rendimiento Comercial</h2>
+                    <p>Ventas directas sin intermediarios con pago asegurado en custodia.</p>
+                </div>
+
+                <div class="kpi-grid">
+                    <div class="kpi-card highlight-gold">
+                        <div class="kpi-icon"><i class="fa-solid fa-coins"></i></div>
+                        <div>
+                            <span>Ventas Directas Acumuladas</span>
+                            <h3>$14,850,000 COP</h3>
+                        </div>
+                    </div>
+                    <div class="kpi-row-2">
+                        <div class="kpi-card">
+                            <div class="kpi-icon green"><i class="fa-solid fa-lock"></i></div>
+                            <div>
+                                <span>Saldo en Escrow</span>
+                                <h3>$7,260,000</h3>
+                            </div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-icon"><i class="fa-solid fa-star"></i></div>
+                            <div>
+                                <span>Calificación</span>
+                                <h3>4.9 / 5.0</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="market-card mt-3">
+                    <h4><i class="fa-solid fa-chart-column"></i> Ingresos Directos Mensuales (Millones COP)</h4>
+                    <div class="market-chart-box">
+                        <canvas id="salesChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= 2. CATÁLOGO, 15 VARIEDADES Y CERTIFICADO SCA ================= -->
+            <section id="sec-catalogo" class="market-section fade-in">
+                <div class="sec-header">
+                    <h2>Publicar Lote Verificado</h2>
+                    <p>Registra la variedad, adjunta el certificado de catación Q-Grader y publica tu lote.</p>
+                </div>
+
+                <div class="market-card">
+                    <h4><i class="fa-solid fa-plus-circle"></i> Nuevo Lote para Venta Directa</h4>
+                    <form id="form-publicar-lote">
+                        <div class="m-input-group">
+                            <label>Nombre Comercial del Lote</label>
+                            <input type="text" id="prod-nombre" placeholder="Ej. Microlote Maragogipe Reserva" required>
+                        </div>
+
+                        <div class="m-grid-2">
+                            <div class="m-input-group">
+                                <label>Variedad de Café (15 opciones)</label>
+                                <select id="prod-variedad">
+                                    <optgroup label="Resistentes (FNC)">
+                                        <option value="Castillo">Castillo</option>
+                                        <option value="Cenicafé 1">Cenicafé 1</option>
+                                        <option value="Variedad Colombia">Variedad Colombia</option>
+                                        <option value="Tabi">Tabi</option>
+                                        <option value="Catimore">Catimore</option>
+                                    </optgroup>
+                                    <optgroup label="Tradicionales y Regionales">
+                                        <option value="Caturra">Caturra</option>
+                                        <option value="Típica (Typica)">Típica (Typica)</option>
+                                        <option value="Maragogipe">Maragogipe (Salazar N.S.)</option>
+                                        <option value="Bourbon Rojo">Bourbon Rojo</option>
+                                    </optgroup>
+                                    <optgroup label="Exóticas / Especialidad">
+                                        <option value="Bourbon Rosado">Bourbon Rosado</option>
+                                        <option value="Bourbon Amarillo">Bourbon Amarillo</option>
+                                        <option value="Geisha">Geisha / Gesha</option>
+                                        <option value="Pacamara">Pacamara</option>
+                                        <option value="Java">Java</option>
+                                        <option value="Laurina">Laurina</option>
+                                    </optgroup>
+                                </select>
+                            </div>
+                            <div class="m-input-group">
+                                <label>Proceso de Beneficio</label>
+                                <select id="prod-proceso">
+                                    <option value="Lavado Suave">Lavado Suave</option>
+                                    <option value="Honey (Miel)">Honey (Miel)</option>
+                                    <option value="Natural">Natural</option>
+                                    <option value="Fermentación Anaeróbica">Anaeróbico</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="m-grid-2">
+                            <div class="m-input-group">
+                                <label>Puntaje SCA en Taza</label>
+                                <input type="number" step="0.1" id="prod-sca" value="86.0" min="78" max="95" required>
+                            </div>
+                            <div class="m-input-group">
+                                <label>Stock (Cargas 125kg)</label>
+                                <input type="number" id="prod-stock" value="5" min="1" required>
+                            </div>
+                        </div>
+
+                        <!-- SUBIDA DE CERTIFICADO SCA / Q-GRADER (OBSERVACIÓN 1 DEL INGENIERO) -->
+                        <div class="cert-upload-box">
+                            <div class="cert-upload-info">
+                                <span><i class="fa-solid fa-file-shield"></i> Soporte de Calidad SCA / Sellos</span>
+                                <small id="cert-file-name">Certificado_QGrader_Almacafe.pdf (Verificado)</small>
+                            </div>
+                            <label class="btn-upload-cert">
+                                <i class="fa-solid fa-upload"></i> Subir PDF/Foto
+                                <input type="file" id="input-cert-sca" accept=".pdf,image/*" hidden>
+                            </label>
+                        </div>
+
+                        <div class="m-input-group">
+                            <label>Sello de Certificación del Lote</label>
+                            <select id="prod-sello">
+                                <option value="Rainforest Alliance + Q-Grader">Rainforest Alliance + Q-Grader</option>
+                                <option value="Sello 4C + Taza Limpia FNC">Sello 4C + Taza Limpia FNC</option>
+                                <option value="Café Orgánico Certificado">Café Orgánico Certificado</option>
+                                <option value="Comercio Justo (Fair Trade)">Comercio Justo (Fair Trade)</option>
+                            </select>
+                        </div>
+
+                        <div class="m-input-group">
+                            <label>Notas Sensoriales (Dictamen Laboratorio)</label>
+                            <input type="text" id="prod-notas" placeholder="Ej. Panela, jazmín, frutos rojos, acidez málica" required>
+                        </div>
+
+                        <div class="sugeridor-box">
+                            <div>
+                                <span><i class="fa-solid fa-wand-magic-sparkles"></i> Precio Sugerido según SCA:</span>
+                                <strong id="precio-sugerido-ia">$2,420,000 COP / Carga</strong>
+                            </div>
+                            <button type="button" class="btn-use-suggested" id="btn-aplicar-sugerido">Aplicar</button>
+                        </div>
+
+                        <div class="m-input-group">
+                            <label>Precio Publicado por Carga (COP)</label>
+                            <input type="number" id="prod-precio" value="2420000" required>
+                        </div>
+
+                        <button type="submit" class="btn-gold">
+                            <i class="fa-solid fa-cloud-arrow-up"></i> Publicar con Certificado Verificado
+                        </button>
+                    </form>
+                </div>
+
+                <h3 class="mt-3 mb-2" style="font-size: 1rem;">Mis Lotes Activos (Finca El Recuerdo)</h3>
+                <div id="lista-catalogo-seller" class="catalog-list"></div>
+            </section>
+
+            <!-- ================= 3. EXPLORAR OTRAS FINCAS (PERFIL COMPRADOR - OBSERVACIÓN 5) ================= -->
+            <section id="sec-explorar" class="market-section fade-in">
+                <div class="sec-header">
+                    <h2>Mercado Regional: Todas las Fincas</h2>
+                    <p>Explora cafés certificados de distintos productores de Norte de Santander, solicita muestras de 250g o compra con Pago Protegido Escrow.</p>
+                </div>
+
+                <!-- Filtros para el Perfil Comprador -->
+                <div class="filter-bar-buyer">
+                    <select id="filtro-variedad-buyer">
+                        <option value="TODAS">Todas las Variedades (15)</option>
+                        <option value="Castillo">Castillo</option>
+                        <option value="Maragogipe">Maragogipe</option>
+                        <option value="Geisha">Geisha</option>
+                        <option value="Tabi">Tabi</option>
+                        <option value="Bourbon Rosado">Bourbon Rosado</option>
+                        <option value="Cenicafé 1">Cenicafé 1</option>
+                        <option value="Caturra">Caturra</option>
+                    </select>
+                    <select id="filtro-municipio-buyer">
+                        <option value="TODOS">Todos los Municipios</option>
+                        <option value="Toledo">Toledo</option>
+                        <option value="Salazar de las Palmas">Salazar de las Palmas</option>
+                        <option value="Bochalema">Bochalema</option>
+                        <option value="Convención">Convención</option>
+                        <option value="Arboledas">Arboledas</option>
+                    </select>
+                </div>
+
+                <!-- Catálogo Multicatalogo de Otras Fincas -->
+                <div id="lista-otras-fincas" class="catalog-list"></div>
+            </section>
+
+            <!-- ================= 4. PAGOS ESCROW, ENTREGAS Y RECLAMOS (OBSERVACIONES 2, 3 y 4) ================= -->
+            <section id="sec-escrow" class="market-section fade-in">
+                <div class="sec-header">
+                    <h2>Seguridad de Pago, Envíos y Reclamos</h2>
+                    <p>El dinero se protege en custodia (Escrow) y solo se libera al confirmar que el café recibido coincide con el certificado y el QR.</p>
+                </div>
+
+                <!-- Explicación visual del Sistema Escrow -->
+                <div class="escrow-banner">
+                    <h4><i class="fa-solid fa-shield-halved"></i> ¿Cómo protege NorteCafé la transacción?</h4>
+                    <p>1. El comprador paga a la cuenta en custodia de NorteCafé.<br>
+                       2. Se valida humedad, factor de rendimiento y QR en el centro de acopio.<br>
+                       3. El comprador tiene 48h al recibir para <strong>Liberar el Pago</strong> o <strong>Abrir un Reclamo</strong> si el café no coincide.</p>
+                </div>
+
+                <!-- Orden Activa 1 -->
+                <div class="market-card mb-2">
+                    <div class="lot-top">
+                        <div>
+                            <h4>Orden #ORD-904 · 3 Cargas Castillo Reserva</h4>
+                            <span class="lot-meta">Comprador: <strong>Tostaduría Alma Andina (Bogotá)</strong></span>
+                            <span class="lot-meta">Transportista: <strong>TransNorte Carga (Placa XVP-412)</strong></span>
+                        </div>
+                        <span class="sca-pill" id="estado-orden-1">En Tránsito</span>
+                    </div>
+
+                    <!-- Línea de tiempo de la entrega y garantía -->
+                    <div class="escrow-steps">
+                        <div class="escrow-step done">
+                            <i class="fa-solid fa-lock"></i>
+                            <span>Pago en Escrow</span>
+                        </div>
+                        <div class="escrow-step done">
+                            <i class="fa-solid fa-qrcode"></i>
+                            <span>QR y Muestra OK</span>
+                        </div>
+                        <div class="escrow-step current" id="step-entrega-1">
+                            <i class="fa-solid fa-truck"></i>
+                            <span>En Transporte</span>
+                        </div>
+                        <div class="escrow-step" id="step-liberar-1">
+                            <i class="fa-solid fa-circle-check"></i>
+                            <span>Liberar $7.26M</span>
+                        </div>
+                    </div>
+
+                    <div class="order-action-row">
+                        <button type="button" class="btn-release-escrow" id="btn-confirmar-recepcion">
+                            <i class="fa-solid fa-check-double"></i> Confirmar Entrega y Liberar Pago
+                        </button>
+                        <button type="button" class="btn-claim-dispute" id="btn-abrir-reclamo">
+                            <i class="fa-solid fa-triangle-exclamation"></i> Abrir Reclamo
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Formulario Modal / Desplegable para Reclamos Logísticos o de Calidad -->
+                <div class="market-card mt-3" id="panel-reclamo" style="display: none; border-color: var(--danger);">
+                    <h4 style="color: var(--danger);"><i class="fa-solid fa-file-circle-exclamation"></i> Reportar Reclamo de Entrega o Calidad</h4>
+                    <form id="form-reclamo">
+                        <div class="m-input-group">
+                            <label>Motivo del Reclamo</label>
+                            <select id="reclamo-motivo">
+                                <option>Diferencia en humedad o perfil de taza frente a la muestra</option>
+                                <option>Sacos con daño o humedad durante el transporte</option>
+                                <option>Diferencia de peso en báscula al recibir</option>
+                                <option>Retraso crítico en la ruta acordada</option>
+                            </select>
+                        </div>
+                        <div class="m-input-group">
+                            <label>Descripción y Evidencia (Se congela el pago Escrow hasta conciliar)</label>
+                            <textarea rows="3" placeholder="Describe el hallazgo en báscula o laboratorio de recepción..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn-claim-dispute" style="width: 100%;">
+                            <i class="fa-solid fa-gavel"></i> Congelar Escrow y Enviar Reclamo a Auditoría
+                        </button>
+                    </form>
+                </div>
+            </section>
+
+            <!-- ================= 5. HISTORIA Y SELLOS DE LA FINCA ================= -->
+            <section id="sec-historia" class="market-section fade-in">
+                <div class="sec-header">
+                    <h2>Identidad de Finca y Sellos</h2>
+                    <p>Reseña histórica familiar, fotografías del predio y certificaciones activas.</p>
+                </div>
+
+                <div class="market-card">
+                    <form id="form-historia-finca">
+                        <h4><i class="fa-solid fa-book-open"></i> Historia Familiar</h4>
+                        <div class="m-input-group">
+                            <label>Título de la Finca</label>
+                            <input type="text" id="hist-titulo" value="Tradición Cafetera de Alta Montaña en Toledo">
+                        </div>
+                        <div class="m-input-group">
+                            <label>Relato del Proceso</label>
+                            <textarea id="hist-relato" rows="3">Familia caficultora de tercera generación en la vereda El Recuerdo (1,650 m.s.n.m.). Café bajo sombrío con selección manual y trazabilidad QR por saco.</textarea>
+                        </div>
+
+                        <h4 class="mt-3"><i class="fa-solid fa-images"></i> Fotos del Predio (Máx. 2)</h4>
+                        <div class="photos-grid">
+                            <div class="photo-slot">
+                                <img id="preview-foto-1" src="https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?auto=format&fit=crop&w=400&q=80" alt="Foto 1">
+                                <label class="btn-upload-photo">Cambiar Foto 1<input type="file" accept="image/*" hidden></label>
+                            </div>
+                            <div class="photo-slot">
+                                <img id="preview-foto-2" src="https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=400&q=80" alt="Foto 2">
+                                <label class="btn-upload-photo">Cambiar Foto 2<input type="file" accept="image/*" hidden></label>
+                            </div>
+                        </div>
+
+                        <h4 class="mt-3"><i class="fa-solid fa-certificate"></i> Certificaciones Oficiales</h4>
+                        <div class="cert-grid">
+                            <label class="cert-check"><input type="checkbox" checked> <span>Rainforest Alliance</span></label>
+                            <label class="cert-check"><input type="checkbox" checked> <span>Certificación 4C</span></label>
+                            <label class="cert-check"><input type="checkbox"> <span>Café Orgánico</span></label>
+                            <label class="cert-check"><input type="checkbox" checked> <span>Fair Trade</span></label>
+                        </div>
+
+                        <button type="submit" class="btn-gold mt-3"><i class="fa-solid fa-floppy-disk"></i> Guardar Cambios</button>
+                    </form>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- BARRA DE NAVEGACIÓN INFERIOR MÓVIL -->
+    <nav class="market-bottom-nav">
+        <a href="#" class="m-nav-btn b-item active" data-target="sec-ventas">
+            <i class="fa-solid fa-chart-line"></i>
+            <span>Ventas</span>
+        </a>
+        <a href="#" class="m-nav-btn b-item" data-target="sec-catalogo">
+            <i class="fa-solid fa-boxes-stacked"></i>
+            <span>Mi Catálogo</span>
+        </a>
+        <a href="#" class="m-nav-btn b-item" data-target="sec-explorar">
+            <i class="fa-solid fa-compass"></i>
+            <span>Otras Fincas</span>
+        </a>
+        <a href="#" class="m-nav-btn b-item" data-target="sec-escrow">
+            <i class="fa-solid fa-shield-halved"></i>
+            <span>Escrow/Envío</span>
+        </a>
+        <a href="#" class="m-nav-btn b-item" data-target="sec-historia">
+            <i class="fa-solid fa-seedling"></i>
+            <span>Mi Finca</span>
+        </a>
+    </nav>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // 1. Lotes propios del caficultor (Vista Vendedor)
+            let misLotes = [
+                {
+                    id: 'L-01',
+                    nombre: 'Microlote Castillo Reserva Especial',
+                    finca: 'Finca El Recuerdo · Toledo',
+                    municipio: 'Toledo',
+                    variedad: 'Castillo',
+                    proceso: 'Lavado Suave',
+                    sca: 86.0,
+                    stock: 6,
+                    sello: 'Rainforest Alliance + Q-Grader',
+                    certArchivo: 'Cert_QGrader_Lote01.pdf',
+                    notas: 'Chocolate oscuro, panela, acidez cítrica media',
+                    precio: 2420000
+                },
+                {
+                    id: 'L-02',
+                    nombre: 'Lote Cenicafé 1 Selección Altura',
+                    finca: 'Finca El Recuerdo · Toledo',
+                    municipio: 'Toledo',
+                    variedad: 'Cenicafé 1',
+                    proceso: 'Honey (Miel)',
+                    sca: 84.5,
+                    stock: 4,
+                    sello: 'Sello 4C + Taza Limpia FNC',
+                    certArchivo: 'Analisis_Almacafe_02.pdf',
+                    notas: 'Caramelo, frutos rojos, cuerpo sedoso',
+                    precio: 2350000
+                }
+            ];
+
+            // 2. Lotes de OTRAS FINCAS de Norte de Santander (Vista Comprador B2B)
+            let lotesOtrasFincas = [
+                {
+                    id: 'EXT-101',
+                    nombre: 'Maragogipe Gigante Patrimonial',
+                    productor: 'Don Carlos Peñaranda',
+                    finca: 'Hacienda San Isidro',
+                    municipio: 'Salazar de las Palmas',
+                    altitud: '1,720 m.s.n.m.',
+                    variedad: 'Maragogipe',
+                    proceso: 'Natural',
+                    sca: 87.5,
+                    stock: 3,
+                    sello: 'Certificado Q-Grader + Orgánico',
+                    notas: 'Floral jazmín, durazno, miel de caña, residual largo',
+                    precio: 2680000
+                },
+                {
+                    id: 'EXT-102',
+                    nombre: 'Microlote Geisha Lavado de Niebla',
+                    productor: 'Asociación Mujeres Cafeteras',
+                    finca: 'Finca La Esmeralda',
+                    municipio: 'Bochalema',
+                    altitud: '1,850 m.s.n.m.',
+                    variedad: 'Geisha',
+                    proceso: 'Fermentación Anaeróbica',
+                    sca: 88.5,
+                    stock: 2,
+                    sello: 'Fair Trade + Q-Grader Verificado',
+                    notas: 'Bergamota, té negro, mandarina dulce, acidez brillante',
+                    precio: 2950000
+                },
+                {
+                    id: 'EXT-103',
+                    nombre: 'Lote Tabi Tradición Sombra',
+                    productor: 'Familia Mora Contreras',
+                    finca: 'Finca Las Brisas',
+                    municipio: 'Convención',
+                    altitud: '1,680 m.s.n.m.',
+                    variedad: 'Tabi',
+                    proceso: 'Lavado Suave',
+                    sca: 85.0,
+                    stock: 8,
+                    sello: 'Rainforest Alliance + 4C',
+                    notas: 'Cacao tostado, nuez, caramelo dulce',
+                    precio: 2390000
+                },
+                {
+                    id: 'EXT-104',
+                    nombre: 'Bourbon Rosado Cosecha Selecta',
+                    productor: 'Luis Daniel Mantilla',
+                    finca: 'Finca Santa Helena',
+                    municipio: 'Arboledas',
+                    altitud: '1,790 m.s.n.m.',
+                    variedad: 'Bourbon Rosado',
+                    proceso: 'Honey (Miel)',
+                    sca: 86.8,
+                    stock: 5,
+                    sello: 'Certificado Q-Grader Almacafé',
+                    notas: 'Cereza madura, panela, acidez vinosa equilibrada',
+                    precio: 2560000
+                }
+            ];
+
+            let salesChartInstance = null;
+
+            // Navegación entre pestañas y Drawer
+            const sidebar = document.getElementById('market-sidebar');
+            const overlay = document.getElementById('market-overlay');
+            const navButtons = document.querySelectorAll('.m-nav-btn');
+            const sections = document.querySelectorAll('.market-section');
+
+            function toggleDrawer(open) {
+                sidebar.classList.toggle('open', open);
+                overlay.classList.toggle('active', open);
+            }
+
+            document.getElementById('btn-open-market-drawer').addEventListener('click', () => toggleDrawer(true));
+            document.getElementById('btn-close-market-drawer').addEventListener('click', () => toggleDrawer(false));
+            overlay.addEventListener('click', () => toggleDrawer(false));
+
+            function irASeccion(targetId) {
+                sections.forEach(sec => sec.classList.toggle('active', sec.id === targetId));
+                navButtons.forEach(b => b.classList.toggle('active', b.getAttribute('data-target') === targetId));
+                toggleDrawer(false);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                if (targetId === 'sec-ventas') setTimeout(inicializarGraficoVentas, 60);
+            }
+
+            navButtons.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = btn.getAttribute('data-target');
+                    if (targetId) irASeccion(targetId);
+                });
+            });
+
+            // Conmutador superior: Rol Vendedor vs Rol Comprador (Observación 5)
+            const btnRoleVendedor = document.getElementById('btn-role-vendedor');
+            const btnRoleComprador = document.getElementById('btn-role-comprador');
+            const headerSubtitle = document.getElementById('header-mode-subtitle');
+            const drawerRoleBadge = document.getElementById('drawer-role-badge');
+
+            btnRoleVendedor.addEventListener('click', () => {
+                btnRoleVendedor.classList.add('active');
+                btnRoleComprador.classList.remove('active');
+                headerSubtitle.textContent = 'Perfil Caficultor · Seller Center';
+                drawerRoleBadge.textContent = 'Perfil: Caficultor Vendedor';
+                irASeccion('sec-catalogo');
+            });
+
+            btnRoleComprador.addEventListener('click', () => {
+                btnRoleComprador.classList.add('active');
+                btnRoleVendedor.classList.remove('active');
+                headerSubtitle.textContent = 'Perfil Comprador · Explorando Fincas';
+                drawerRoleBadge.textContent = 'Perfil: Comprador B2B';
+                irASeccion('sec-explorar');
+            });
+
+            // Gráfico de Ventas
+            function inicializarGraficoVentas() {
+                const canvas = document.getElementById('salesChart');
+                if (!canvas) return;
+                if (salesChartInstance) salesChartInstance.destroy();
+
+                salesChartInstance = new Chart(canvas.getContext('2d'), {
+                    type: 'bar',
+                    data: {
+                        labels: ['May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct'],
+                        datasets: [{
+                            data: [1.8, 2.1, 2.4, 2.2, 2.9, 3.45],
+                            backgroundColor: '#D99026',
+                            borderRadius: 6,
+                            barThickness: 22
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            x: { grid: { display: false }, ticks: { color: '#B8A99E', font: { size: 11 } } },
+                            y: {
+                                beginAtZero: true,
+                                suggestedMax: 4.0,
+                                grid: { color: 'rgba(255,255,255,0.06)' },
+                                ticks: { color: '#B8A99E', font: { size: 11 }, callback: v => `$${v}M` }
+                            }
+                        }
+                    }
+                });
+            }
+            inicializarGraficoVentas();
+
+            // Subida de Certificado SCA en el formulario
+            const inputCertSca = document.getElementById('input-cert-sca');
+            const certFileName = document.getElementById('cert-file-name');
+            let nombreCertificadoActual = 'Certificado_QGrader_Almacafe.pdf';
+
+            if (inputCertSca) {
+                inputCertSca.addEventListener('change', (e) => {
+                    if (e.target.files[0]) {
+                        nombreCertificadoActual = e.target.files[0].name;
+                        certFileName.textContent = nombreCertificadoActual + ' (Cargado ✅)';
+                    }
+                });
+            }
+
+            // Sugeridor de precio según SCA
+            const inputSca = document.getElementById('prod-sca');
+            const inputPrecio = document.getElementById('prod-precio');
+            const textoSugerido = document.getElementById('precio-sugerido-ia');
+            let sugeridoActual = 2420000;
+
+            function actualizarSugerido() {
+                const sca = parseFloat(inputSca.value) || 84;
+                sugeridoActual = Math.round(2150000 + Math.max(0, (sca - 80) * 45000));
+                textoSugerido.textContent = '$' + sugeridoActual.toLocaleString('es-CO') + ' COP / Carga';
+            }
+            inputSca.addEventListener('input', actualizarSugerido);
+            document.getElementById('btn-aplicar-sugerido').addEventListener('click', () => {
+                actualizarSugerido();
+                inputPrecio.value = sugeridoActual;
+            });
+
+            // Renderizar Catálogo Propio (Vendedor)
+            const contenedorMiCatalogo = document.getElementById('lista-catalogo-seller');
+            function renderizarMiCatalogo() {
+                contenedorMiCatalogo.innerHTML = '';
+                misLotes.forEach(lote => {
+                    const div = document.createElement('div');
+                    div.className = 'lot-item-card';
+                    div.innerHTML = `
+                        <div class="lot-top">
+                            <div>
+                                <h4>${lote.nombre}</h4>
+                                <span class="lot-meta">${lote.variedad} · ${lote.proceso} · Stock: <strong>${lote.stock} cargas</strong></span>
+                            </div>
+                            <span class="sca-pill">SCA ${lote.sca.toFixed(1)}</span>
+                        </div>
+                        <div class="verified-cert-tag">
+                            <i class="fa-solid fa-file-circle-check"></i> ${lote.sello} (${lote.certArchivo})
+                        </div>
+                        <span class="lot-meta"><i class="fa-solid fa-mug-hot"></i> Notas: ${lote.notas}</span>
+                        <div class="lot-bottom">
+                            <span class="lot-price">$${lote.precio.toLocaleString('es-CO')} / carga</span>
+                            <div class="lot-actions">
+                                <button type="button" class="btn-lot-act" onclick="alert('Abriendo soporte oficial: ${lote.certArchivo}\\nAutenticidad validada con QR del lote.')">
+                                    <i class="fa-solid fa-eye"></i> Ver Certificado
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    contenedorMiCatalogo.appendChild(div);
+                });
+            }
+
+            // Renderizar Otras Fincas (Modo Comprador Multicatalogo)
+            const contenedorOtrasFincas = document.getElementById('lista-otras-fincas');
+            const filtroVariedad = document.getElementById('filtro-variedad-buyer');
+            const filtroMunicipio = document.getElementById('filtro-municipio-buyer');
+
+            function renderizarOtrasFincas() {
+                contenedorOtrasFincas.innerHTML = '';
+                const varSel = filtroVariedad.value;
+                const munSel = filtroMunicipio.value;
+
+                // Unir los lotes del usuario + los lotes de otras fincas de Norte de Santander
+                const todosLosLotes = [...misLotes.map(l => ({
+                    ...l,
+                    productor: 'Joustin Gallo',
+                    altitud: '1,650 m.s.n.m.'
+                })), ...lotesOtrasFincas];
+
+                const filtrados = todosLosLotes.filter(l => {
+                    const cumpleVar = varSel === 'TODAS' || l.variedad.includes(varSel);
+                    const cumpleMun = munSel === 'TODOS' || l.municipio === munSel;
+                    return cumpleVar && cumpleMun;
+                });
+
+                filtrados.forEach(lote => {
+                    const div = document.createElement('div');
+                    div.className = 'lot-item-card';
+                    div.innerHTML = `
+                        <div class="lot-top">
+                            <div>
+                                <h4>${lote.nombre}</h4>
+                                <span class="lot-meta"><i class="fa-solid fa-location-dot"></i> <strong>${lote.finca}</strong> (${lote.municipio}) · ${lote.altitud || '1,650 m.s.n.m.'}</span>
+                                <span class="lot-meta">Productor: ${lote.productor} | Variedad: <strong>${lote.variedad}</strong> (${lote.proceso})</span>
+                            </div>
+                            <span class="sca-pill">SCA ${lote.sca.toFixed(1)}</span>
+                        </div>
+                        <div class="verified-cert-tag">
+                            <i class="fa-solid fa-certificate"></i> ${lote.sello} · QR Verificado
+                        </div>
+                        <span class="lot-meta"><em>"${lote.notas}"</em> · Disponible: ${lote.stock} cargas</span>
+                        <div class="lot-bottom">
+                            <span class="lot-price">$${lote.precio.toLocaleString('es-CO')} COP</span>
+                            <div class="lot-actions">
+                                <button type="button" class="btn-lot-act" onclick="alert('Solicitud de Muestra Física (250g) enviada a ${lote.finca} para verificación previa en laboratorio.')">
+                                    Pedir Muestra 250g
+                                </button>
+                                <button type="button" class="btn-use-suggested" onclick="alert('Iniciando Compra Protegida (Escrow) para ${lote.nombre}.\\nEl pago quedará resguardado hasta que confirmes la recepción conforme del café.')">
+                                    <i class="fa-solid fa-lock"></i> Comprar (Escrow)
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    contenedorOtrasFincas.appendChild(div);
+                });
+            }
+
+            filtroVariedad.addEventListener('change', renderizarOtrasFincas);
+            filtroMunicipio.addEventListener('change', renderizarOtrasFincas);
+
+            renderizarMiCatalogo();
+            renderizarOtrasFincas();
+
+            // Publicar nuevo lote
+            document.getElementById('form-publicar-lote').addEventListener('submit', (e) => {
+                e.preventDefault();
+                const nuevo = {
+                    id: 'L-' + Date.now(),
+                    nombre: document.getElementById('prod-nombre').value.trim(),
+                    finca: 'Finca El Recuerdo · Toledo',
+                    municipio: 'Toledo',
+                    variedad: document.getElementById('prod-variedad').value,
+                    proceso: document.getElementById('prod-proceso').value,
+                    sca: parseFloat(document.getElementById('prod-sca').value) || 86.0,
+                    stock: parseInt(document.getElementById('prod-stock').value, 10) || 1,
+                    sello: document.getElementById('prod-sello').value,
+                    certArchivo: nombreCertificadoActual,
+                    notas: document.getElementById('prod-notas').value.trim(),
+                    precio: parseInt(document.getElementById('prod-precio').value, 10) || 2420000
+                };
+                misLotes.unshift(nuevo);
+                renderizarMiCatalogo();
+                renderizarOtrasFincas();
+                e.target.reset();
+                alert('¡Lote publicado con Certificado Q-Grader adjunto! Ya es visible tanto en tu catálogo como en la vitrina de compradores.');
+            });
+
+            // Acciones de Escrow, Confirmación de Entrega y Reclamos (Observaciones 3 y 4)
+            document.getElementById('btn-confirmar-recepcion').addEventListener('click', () => {
+                document.getElementById('estado-orden-1').textContent = 'Entregado y Pagado';
+                document.getElementById('step-entrega-1').className = 'escrow-step done';
+                document.getElementById('step-liberar-1').className = 'escrow-step done';
+                alert('✅ Recepción confirmada conforme al QR y muestra inicial.\nSe han liberado $7,260,000 COP desde la cuenta Escrow hacia la cuenta del caficultor.');
+            });
+
+            const panelReclamo = document.getElementById('panel-reclamo');
+            document.getElementById('btn-abrir-reclamo').addEventListener('click', () => {
+                panelReclamo.style.display = panelReclamo.style.display === 'none' ? 'block' : 'none';
+            });
+
+            document.getElementById('form-reclamo').addEventListener('submit', (e) => {
+                e.preventDefault();
+                document.getElementById('estado-orden-1').textContent = 'En Disputa / Retenido';
+                document.getElementById('estado-orden-1').style.background = '#EF5350';
+                document.getElementById('estado-orden-1').style.color = '#FFFFFF';
+                panelReclamo.style.display = 'none';
+                alert('⚠️ Reclamo registrado. El saldo en custodia ($7,260,000 COP) ha sido congelado temporalmente mientras se verifica la contra-muestra en el punto de acopio.');
+            });
+
+        });
+    </script>
+</body>
+</html>
